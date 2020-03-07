@@ -41,4 +41,4 @@ type Mutation{
 
     createMessage(id:ID!,mcreator:ID!,mchat:ID!,content:String!): Message!
 }
-`
+`;

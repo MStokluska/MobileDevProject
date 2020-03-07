@@ -1,5 +1,5 @@
 import express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express'
+import { ApolloServer, gql } from 'apollo-server-express';
 import { chats } from './db';
 import cors from 'cors';
 import schema from './schema';

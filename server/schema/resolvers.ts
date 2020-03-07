@@ -1,5 +1,6 @@
-import { chats, users, message } from '../db';
+import { chats, users, message, pool} from '../db';
 import { Resolvers } from '../types/graphql';
+import sql from 'sql-template-strings';
 
 const resolvers: Resolvers = {
   Chat: {
@@ -21,25 +22,28 @@ const resolvers: Resolvers = {
   },
 
   Query: {
-    getAllUsers() {
-      return users;
+    async getAllUsers(root,args,{ db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM users
+      `);
+      return rows;
     },
-    getAUser(root, { userId }) {
+    getAUser(root, { userId }, context) {
       return users.find(u => u.id === userId);
     },
-    getAllChats() {
+    getAllChats(root,context) {
       return chats;
     },
-    getAChat(root, { chatId }) {
+    getAChat(root, { chatId }, context) {
       return chats.find(c => c.id === chatId);
     },
-    getAllMessages() {
+    getAllMessages(root, context) {
       return message;
     },
-    getAMessage(root, { messageId }) {
-      return message.find(m => m.id === messageId);
-    },
-    getMessagesForChatRoom(root, { chatRoomId }) {
+    // getAMessage(root, { messageId }, context) {
+    //   return message.find(m => m.id === messageId);
+    // },
+    getMessagesForChatRoom(root, { chatRoomId }, context) {
       const list = message.filter(m => m.mchat === chatRoomId);
       return list;
     },

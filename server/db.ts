@@ -1,3 +1,33 @@
+import { Pool } from 'pg';
+
+export type User = {
+  id: string,
+  name: string,
+  password: string
+}
+
+export type Chat = {
+  id: string,
+  creator: string,
+  recipent: string
+}
+
+export type Message = {
+  id: string,
+  mcreator: string,
+  mchat: string,
+  content: string
+}
+
+export const dbConfig = {
+  host: 'localhost',
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
+  user: 'testuser',
+  password: 'testpassword',
+  database: 'mobiledb',
+};
+export let pool: Pool = new Pool(dbConfig);
+
 export const users = [
   {
     id: '1',

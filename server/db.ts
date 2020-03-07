@@ -15,7 +15,7 @@ export const chats = [
   {
     id: '1',
     creator: '1',
-    receipent: '2',
+    recipent: '2',
   },
 ];
 

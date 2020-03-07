@@ -6,6 +6,7 @@ services:
     ports:
       - "5432:5432"
     environment:
+      POSTGRES_DB: mobileapp
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword
-      POSTGRES_DB: mobileDb
+      

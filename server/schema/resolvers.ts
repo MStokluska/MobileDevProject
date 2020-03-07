@@ -1,4 +1,4 @@
-import { chats, users, message, pool} from '../db';
+import { chats, users, message, pool } from '../db';
 import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
 
@@ -22,7 +22,7 @@ const resolvers: Resolvers = {
   },
 
   Query: {
-    async getAllUsers(root,args,{ db }) {
+    async getAllUsers(root, args, { db }) {
       const { rows } = await db.query(sql`
         SELECT * FROM users
       `);
@@ -31,7 +31,7 @@ const resolvers: Resolvers = {
     getAUser(root, { userId }, context) {
       return users.find(u => u.id === userId);
     },
-    getAllChats(root,context) {
+    getAllChats(root, context) {
       return chats;
     },
     getAChat(root, { chatId }, context) {
@@ -93,7 +93,7 @@ const resolvers: Resolvers = {
       chats.splice(chatIndex, 1);
       return args.id;
     },
-    createMessage(root, args, { pubsub}) {
+    createMessage(root, args, { pubsub }) {
       const newMessage = {
         id: args.id,
         mcreator: args.mcreator,
@@ -115,8 +115,6 @@ const resolvers: Resolvers = {
         pubsub.asyncIterator('messageAdded'),
     },
   },
-
-
 };
 
 export default resolvers;

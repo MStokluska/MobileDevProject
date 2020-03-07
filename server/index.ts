@@ -4,15 +4,11 @@ import { pool } from './db';
 import cors from 'cors';
 import schema from './schema';
 import http from 'http';
-import { MyContext } from './context';
-import sql from 'sql-template-strings';
-
+import { port } from './env';
 const app = express();
 app.use(express.json());
 
 app.use(cors());
-
-
 
 const db = pool.connect();
 
@@ -27,7 +23,7 @@ const server = new ApolloServer({
     }
     return {
       pubsub,
-      db
+      db,
     };
   },
   subscriptions: {
@@ -48,7 +44,6 @@ server.applyMiddleware({
   path: '/graphql',
 });
 
-const port = process.env.PORT || 4000;
 httpServer.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

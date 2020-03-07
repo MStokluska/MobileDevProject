@@ -89,7 +89,7 @@ const resolvers: Resolvers = {
       chats.splice(chatIndex, 1);
       return args.id;
     },
-    createMessage(root, args, context) {
+    createMessage(root, args, { pubsub}) {
       const newMessage = {
         id: args.id,
         mcreator: args.mcreator,
@@ -98,9 +98,21 @@ const resolvers: Resolvers = {
       };
       message.push(newMessage);
 
+      pubsub.publish('messageAdded', {
+        messageAdded: newMessage,
+      });
+
       return newMessage;
     },
   },
+  Subscription: {
+    messageAdded: {
+      subscribe: (root, args, { pubsub }) =>
+        pubsub.asyncIterator('messageAdded'),
+    },
+  },
+
+
 };
 
 export default resolvers;

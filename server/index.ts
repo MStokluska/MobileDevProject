@@ -1,29 +1,35 @@
 import express from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer, gql, PubSub } from 'apollo-server-express';
 import { chats } from './db';
 import cors from 'cors';
 import schema from './schema';
+import http from 'http';
 
 const app = express();
 app.use(express.json());
 
 app.use(cors());
 
-app.get('/_ping', (req, res) => {
-  res.send('pong');
-});
-
 app.get('/chats', (req, res) => {
   res.json(chats);
 });
 
-const server = new ApolloServer({ schema });
+
+const pubsub = new PubSub();
+const server = new ApolloServer({
+  schema,
+  context: () => ({ pubsub }),
+});
+
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
+
 server.applyMiddleware({
   app,
   path: '/graphql',
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });

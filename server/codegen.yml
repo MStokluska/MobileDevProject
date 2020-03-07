@@ -6,9 +6,10 @@ generates:
       - typescript
       - typescript-resolvers
     config:
+      contextType: ../context#MyContext
       mappers:
         # import { Message } from '../db'
         # The root types of Message resolvers
         Message: ../db#Message
-        Chat: ../db#Chat
+        Chat: ../db#Chats
         User: ../db#Users

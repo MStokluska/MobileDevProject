@@ -1,6 +1,7 @@
 export const typeDefs = ` 
 type User{
     id: ID!
+    username: String!
     name: String!
     password: String!
 }
@@ -21,10 +22,10 @@ type Message{
 type Query{
 
     getAllUsers: [User!]!
-    getAUser(userId: ID!): User!
+    getUser(userName: String): User!
 
     getAllChats: [Chat!]!
-    getAChat(chatId: ID!): Chat!
+    getChat(chatId: ID!): Chat!
 
     getAllMessages: [Message!]!
     getAMessage(messageId: ID!): Message!
@@ -32,14 +33,14 @@ type Query{
 }
 
 type Mutation{
-    createUser(id: ID!, name: String!, password: String!): User
-    deleteUser(id: ID!): ID!
-    editUser(id: ID!, name: String!, password: String!): User
+    createUser(username: String!, name: String!, password: String!): User
+    deleteUser(username: String!): String
+    editUser(id: ID!, username: String!, name: String!, password: String!): User
 
-    createChat(id:ID!, creator:ID!, recipent:ID!): Chat!
+    createChat(creator:ID!, recipent:ID!): Chat!
     deleteChat(id:ID!): ID!
 
-    createMessage(id:ID!,mcreator:ID!,mchat:ID!,content:String!): Message!
+    createMessage(mcreator:ID!,mchat:ID!,content:String!): Message!
 }
 
 type Subscription {

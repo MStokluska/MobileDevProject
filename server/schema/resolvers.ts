@@ -1,23 +1,35 @@
-import { chats, users, message, pool } from '../db';
 import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
 
 const resolvers: Resolvers = {
   Chat: {
-    creator(chat) {
-      return users.find(u => u.id === chat.creator);
+    async creator(chat, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM users where users.id = ${chat.creator}
+      `);
+      return rows[0];
     },
-    recipent(chat) {
-      return users.find(u => u.id === chat.recipent);
+
+    async recipent(chat, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM users where users.id = ${chat.recipent}
+      `);
+      return rows[0];
     },
   },
 
   Message: {
-    mcreator(message) {
-      return users.find(u => u.id === message.mcreator);
+    async mcreator(message, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM users where users.id = ${message.mcreator}
+      `);
+      return rows[0];
     },
-    mchat(message) {
-      return chats.find(u => u.id === message.mchat);
+    async mchat(message, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM chats where chats.id = ${message.mchat}
+      `);
+      return rows[0];
     },
   },
 
@@ -28,85 +40,108 @@ const resolvers: Resolvers = {
       `);
       return rows;
     },
-    getAUser(root, { userId }, context) {
-      return users.find(u => u.id === userId);
+    async getUser(root, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM users WHERE users.username = ${args.userName}
+      `);
+      return rows[0];
     },
-    getAllChats(root, context) {
-      return chats;
+
+    async getAllChats(root, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM chats
+      `);
+      return rows;
     },
-    getAChat(root, { chatId }, context) {
-      return chats.find(c => c.id === chatId);
+    async getChat(root, args, { db }) {
+      const { rows } = await db.query(sql`
+      SELECT * FROM chats WHERE chats.id = ${args.chatId}
+    `);
+      return rows[0];
     },
-    getAllMessages(root, context) {
-      return message;
+    async getAllMessages(root, args, { db }) {
+      const { rows } = await db.query(sql`
+        SELECT * FROM messages
+      `);
+      return rows;
     },
-    // getAMessage(root, { messageId }, context) {
-    //   return message.find(m => m.id === messageId);
-    // },
-    getMessagesForChatRoom(root, { chatRoomId }, context) {
-      const list = message.filter(m => m.mchat === chatRoomId);
-      return list;
+    async getAMessage(root, args, { db }) {
+      const { rows } = await db.query(sql`
+      SELECT * FROM messages WHERE messages.id = ${args.messageId}
+    `);
+      return rows[0];
+    },
+
+    async getMessagesForChatRoom(root, args, { db }) {
+      const { rows } = await db.query(sql`
+      SELECT * FROM messages WHERE messages.mchat = ${args.chatRoomId}
+    `);
+      return rows;
     },
   },
 
   Mutation: {
-    createUser(root, args, context) {
-      const newUser = {
-        id: args.id,
-        name: args.name,
-        password: args.password,
-      };
+    async createUser(root, args, { db }) {
+      const existingUserQuery = await db.query(
+        sql`SELECT * FROM users WHERE username = ${args.username}`
+      );
+      if (existingUserQuery.rows[0]) {
+        throw Error('username already exists');
+      }
 
-      users.push(newUser);
-      return newUser;
-    },
-    deleteUser(root, args, context) {
-      const userIndex = users.findIndex(u => u.id === args.id);
-      users.splice(userIndex, 1);
-      return args.id;
-    },
-    editUser(root, args, context) {
-      const userIndex = users.findIndex(u => u.id === args.id);
-      users.splice(userIndex, 1);
-      const newUser = {
-        id: args.id,
-        name: args.name,
-        password: args.password,
-      };
-      users.push(newUser);
+      const createUserQuery = await db.query(sql`
+        INSERT INTO users(username, name, password) values(${args.username},${args.name},${args.password})  RETURNING *;
+      `);
 
-      return newUser;
+      const user = createUserQuery.rows[0];
+      return user;
     },
-    createChat(root, args, context) {
-      const newChat = {
-        id: args.id,
-        creator: args.creator,
-        recipent: args.recipent,
-      };
+    async deleteUser(root, args, { db }) {
+      const deleteUserQuery = await db.query(sql`
+      DELETE FROM users where users.username = ${args.username} RETURNING *;
+      `);
+      return deleteUserQuery.rows[0].username;
+    },
 
-      chats.push(newChat);
+    async editUser(root, args, { db }) {
+      const updateQuery = await db.query(sql`
+      UPDATE users
+      SET username = ${args.username},
+          name = ${args.name},
+          password = ${args.password}
+      WHERE
+          users.id = ${args.id} RETURNING *;
+      `);
+      return updateQuery.rows[0];
+    },
 
-      return newChat;
+    async createChat(root, args, { db }) {
+      const createChatQuery = await db.query(sql`
+        INSERT INTO chats(creator, recipent) values(${args.creator},${args.recipent})  RETURNING *;
+      `);
+
+      const chat = createChatQuery.rows[0];
+      return chat;
     },
-    deleteChat(root, args, context) {
-      const chatIndex = chats.findIndex(c => c.id === args.id);
-      chats.splice(chatIndex, 1);
-      return args.id;
+    async deleteChat(root, args, { db }) {
+      const deleteChatQuery = await db.query(sql`
+      DELETE FROM chats where chats.id = ${args.id} RETURNING *;
+      `);
+      return deleteChatQuery.rows[0].id;
     },
-    createMessage(root, args, { pubsub }) {
-      const newMessage = {
-        id: args.id,
-        mcreator: args.mcreator,
-        mchat: args.mchat,
-        content: args.content,
-      };
-      message.push(newMessage);
+
+    async createMessage(root, args, { pubsub, db }) {
+      const createMessageQuery = await db.query(sql`
+        INSERT INTO messages(mcreator, mchat, content) values(${args.mcreator},${args.mchat}, ${args.content})  RETURNING *;
+      `);
+
+      const message = createMessageQuery.rows[0];
 
       pubsub.publish('messageAdded', {
-        messageAdded: newMessage,
+        messageAdded: message,
       });
 
-      return newMessage;
+      return message;
     },
   },
   Subscription: {

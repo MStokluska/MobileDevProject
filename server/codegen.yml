@@ -1,4 +1,4 @@
-schema: ./schema/typeDefs.graphql
+schema: ./schema/schema.graphql
 overwrite: true
 generates:
   ./types/graphql.d.ts:

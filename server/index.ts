@@ -28,11 +28,14 @@ const server = new ApolloServer({
   },
   subscriptions: {
     onConnect(params, ws, ctx) {
-      // pass the request object to context
       return {
         request: ctx.request,
       };
     },
+  },
+  formatResponse: (res: any, { context }: any) => {
+    context.db.release();
+    return res;
   },
 });
 

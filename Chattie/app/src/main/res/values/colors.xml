@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- colour for the app bar and other primary UI elements -->
+    <color name="colorPrimary">#9633FF</color>
+    <!-- a darker variant of the primary colour, used this for
+         things like status bars and other app bars.  -->
+    <color name="colorMain">#9633FF</color>
+    <!-- a secondary colour for controls like checkboxes
+         and text fields.  -->
+    <color name="whiteFont">#ffffff</color>
+    <color name="background">#ffffff</color>
+</resources>

@@ -1,5 +1,6 @@
 import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
+import { UserInputError } from 'apollo-server-express';
 
 const resolvers: Resolvers = {
   Chat: {
@@ -86,7 +87,7 @@ const resolvers: Resolvers = {
         sql`SELECT * FROM users WHERE username = ${args.username}`
       );
       if (existingUserQuery.rows[0]) {
-        throw Error('username already exists');
+        throw new UserInputError('username already exists');
       }
 
       const createUserQuery = await db.query(sql`

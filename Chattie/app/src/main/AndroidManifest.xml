@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mstokluska.chattie">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".main.MainApp"
         android:allowBackup="true"

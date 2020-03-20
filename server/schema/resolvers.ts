@@ -1,6 +1,6 @@
 import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
-import { UserInputError } from 'apollo-server-express';
+import { UserInputError, CheckResultAndHandleErrors } from 'apollo-server-express';
 
 const resolvers: Resolvers = {
   Chat: {
@@ -47,6 +47,24 @@ const resolvers: Resolvers = {
       `);
       return rows[0];
     },
+
+    async checkUser(root, args, { db }) {
+     
+      const { rows } = await db.query(
+        sql`SELECT * FROM users WHERE username = ${args.userName} AND password = ${args.password}`
+      );
+
+      if(rows[0] == null){
+        throw new UserInputError('Incorrect username or password');
+      } 
+
+      console.log(rows[0])
+
+      
+      return rows[0]
+
+    },
+    
 
     async getAllChats(root, args, { db }) {
       const { rows } = await db.query(sql`

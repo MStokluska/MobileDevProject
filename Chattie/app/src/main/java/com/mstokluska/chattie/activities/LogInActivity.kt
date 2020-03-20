@@ -53,8 +53,13 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
 
                            runOnUiThread {
                                if (resultUserName != null) {
-                                   toast("Success!")
-                                   startActivityForResult<ChatsActivity>(0)
+                                   user.id = response.data()!!.checkUser().id()
+                                   user.name = response.data()!!.checkUser().name()
+                                   user.userName = response.data()!!.checkUser().username()
+                                   user.password = response.data()!!.checkUser().password()
+
+                                   startActivityForResult(intentFor<ChatsActivity>().putExtra("user_logged_in", user), 0)
+
                                } else {
                                    toast("Incorrect username or password")
                                }

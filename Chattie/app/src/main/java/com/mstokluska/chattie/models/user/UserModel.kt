@@ -1,8 +1,12 @@
 package com.mstokluska.chattie.models.user
 
-data class UserModel(var id: Int = 0,
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class UserModel(var id: String = "",
                      var userName: String = "",
                      var name: String = "",
                      var password: String = ""
-)
+): Parcelable
 

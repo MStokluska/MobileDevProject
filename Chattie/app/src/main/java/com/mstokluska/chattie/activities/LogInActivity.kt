@@ -7,7 +7,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.main.MainApp
-import com.mstokluska.chattie.models.user.UserModel
+import com.mstokluska.chattie.models.UserModel
 import com.mstokluska.graphql.CheckUserQuery
 
 

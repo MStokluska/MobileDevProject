@@ -1,4 +1,4 @@
-package com.mstokluska.chattie.models.user
+package com.mstokluska.chattie.models
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

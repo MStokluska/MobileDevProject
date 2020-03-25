@@ -1,12 +1,15 @@
 package com.mstokluska.chattie.activities
 
+import ChatAdapter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.main.MainApp
-import com.mstokluska.chattie.models.user.UserModel
+import com.mstokluska.chattie.models.ChatModel
+import com.mstokluska.chattie.models.UserModel
 import kotlinx.android.synthetic.main.activity_chats.*
 
 import org.jetbrains.anko.AnkoLogger
@@ -17,16 +20,34 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger {
 
     lateinit var app: MainApp
     var user = UserModel()
+    val chats = ArrayList<ChatModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chats)
         app = application as MainApp
 
+        chats.add(ChatModel("1","2"))
+        chats.add(ChatModel("3", "4"))
+        chats.add(ChatModel("5", "6"))
+
+
+        val layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = ChatAdapter(chats)
+
+
+
         if (intent.hasExtra("user_logged_in")) {
             user = intent.extras.getParcelable<UserModel>("user_logged_in")
             toast("username is ${user.name}")
         }
+
+
+
+
+
+
 
 
 

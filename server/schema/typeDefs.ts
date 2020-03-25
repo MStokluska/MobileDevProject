@@ -23,6 +23,7 @@ type Query{
 
     getAllUsers: [User!]!
     getUser(userName: String): User!
+    checkUser(userName: String!, password:String!): User!
 
     getAllChats: [Chat!]!
     getChat(chatId: ID!): Chat!

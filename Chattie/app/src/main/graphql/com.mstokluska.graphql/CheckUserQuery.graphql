@@ -1,0 +1,8 @@
+query checkUser($userName: String!, $password: String!){
+    checkUser(userName: $userName, password: $password){
+        username
+        name
+        password
+        id
+    }
+}

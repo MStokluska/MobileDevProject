@@ -27,6 +27,7 @@ type Query{
 
     getAllChats: [Chat!]!
     getChat(chatId: ID!): Chat!
+    getChatForUser(userId: ID!): [Chat!]!
 
     getAllMessages: [Message!]!
     getAMessage(messageId: ID!): Message!

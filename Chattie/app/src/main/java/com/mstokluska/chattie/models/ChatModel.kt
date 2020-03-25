@@ -1,4 +1,4 @@
 package com.mstokluska.chattie.models
 
-data class ChatModel( var sender: String = "",
+data class ChatModel(
                       var receiver: String = "")

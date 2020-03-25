@@ -25,7 +25,6 @@ class ChatAdapter constructor(private var chats: List<ChatModel>) : RecyclerView
 
         fun bind(chat: ChatModel) {
             itemView.chatWith.text = chat.receiver
-            itemView.lastMessage.text = chat.sender
         }
     }
 }

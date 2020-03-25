@@ -58,9 +58,6 @@ const resolvers: Resolvers = {
         throw new UserInputError('Incorrect username or password');
       } 
 
-      console.log(rows[0])
-
-      
       return rows[0]
 
     },
@@ -77,6 +74,12 @@ const resolvers: Resolvers = {
       SELECT * FROM chats WHERE chats.id = ${args.chatId}
     `);
       return rows[0];
+    },
+    async getChatForUser(root, args, { db }) {
+      const { rows } = await db.query(sql`
+      SELECT * FROM chats WHERE chats.creator = ${args.userId}
+      `)
+      return rows;
     },
     async getAllMessages(root, args, { db }) {
       const { rows } = await db.query(sql`

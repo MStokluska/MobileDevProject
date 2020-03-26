@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:elevation="24dp">
+    android:elevation="20dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,16 +13,29 @@
 
         <TextView
             android:id="@+id/chatWith"
-            android:layout_width="wrap_content"
+            android:layout_width="199dp"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@id/chatWithText"
+            android:layout_marginEnd="-210dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/image_delete"
+            android:layout_width="42dp"
+            android:layout_height="37dp"
             android:layout_alignParentTop="true"
-            android:textSize="30sp"/>
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_delete" />
 
         <TextView
-            android:id="@+id/lastMessage"
+            android:id="@+id/chatWithText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/chatWith"/>
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:text="@string/chatWithText" />
+
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -1,0 +1,3 @@
+subscription chatDeleted{
+    chatDeleted
+}

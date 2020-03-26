@@ -8,8 +8,8 @@ type User{
 
 type Chat{
     id: ID!
-    creator: User!
-    recipent: User!
+    creator: User
+    recipent: User
 }
 
 type Message{
@@ -47,5 +47,7 @@ type Mutation{
 
 type Subscription {
     messageAdded: Message!
+    chatAdded: Chat!
+    chatDeleted: ID!
   }
 `;

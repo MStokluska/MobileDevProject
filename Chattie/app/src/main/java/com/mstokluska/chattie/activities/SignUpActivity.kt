@@ -30,7 +30,7 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
             user.userName = user_create_Nickname.text.toString()
             user.password = user_create_Password.text.toString()
 
-            if(user.name.isEmpty() or user.userName.isEmpty() or user.password.isEmpty()){
+            if (user.name.isEmpty() or user.userName.isEmpty() or user.password.isEmpty()) {
                 toast("Make sure all fields are filled")
             } else {
 
@@ -72,9 +72,6 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
         }
 
 
-
-        
-
         // menu bar
         toolbarCreateUser.title = title
         setSupportActionBar(toolbarCreateUser)
@@ -85,6 +82,7 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
         menuInflater.inflate(R.menu.create_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_cancel -> {

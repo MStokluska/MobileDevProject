@@ -30,7 +30,7 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
             user.password = userPassword.text.toString()
 
 
-            if(user.userName.isEmpty() or user.password.isEmpty()){
+            if (user.userName.isEmpty() or user.password.isEmpty()) {
                 toast("Username and Password are required")
             } else {
 
@@ -39,43 +39,47 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
                     .password(user.password)
                     .build()
 
-               app.client
-                   .query(checkUserQuery)
-                   .enqueue(object : ApolloCall.Callback<CheckUserQuery.Data>(){
+                app.client
+                    .query(checkUserQuery)
+                    .enqueue(object : ApolloCall.Callback<CheckUserQuery.Data>() {
 
-                       override fun onFailure(e: ApolloException) {
+                        override fun onFailure(e: ApolloException) {
 
-                       }
+                        }
 
-                       override fun onResponse(response: Response<CheckUserQuery.Data>) {
+                        override fun onResponse(response: Response<CheckUserQuery.Data>) {
 
-                           val resultUserName = response.data()?.checkUser()?.username()
+                            val resultUserName = response.data()?.checkUser()?.username()
 
-                           runOnUiThread {
-                               if (resultUserName != null) {
-                                   user.id = response.data()!!.checkUser().id()
-                                   user.name = response.data()!!.checkUser().name()
-                                   user.userName = response.data()!!.checkUser().username()
-                                   user.password = response.data()!!.checkUser().password()
+                            runOnUiThread {
+                                if (resultUserName != null) {
+                                    user.id = response.data()!!.checkUser().id()
+                                    user.name = response.data()!!.checkUser().name()
+                                    user.userName = response.data()!!.checkUser().username()
+                                    user.password = response.data()!!.checkUser().password()
 
-                                   startActivityForResult(intentFor<ChatsActivity>().putExtra("user_logged_in", user), 0)
+                                    startActivityForResult(
+                                        intentFor<ChatsActivity>().putExtra(
+                                            "user_logged_in",
+                                            user
+                                        ), 0
+                                    )
 
-                               } else {
-                                   toast("Incorrect username or password")
-                               }
-                           }
+                                } else {
+                                    toast("Incorrect username or password")
+                                }
+                            }
 
-                       }
-                   })
+                        }
+                    })
 
 
             }
 
 
-
         }
 
-        btnSignUp.setOnClickListener(){
+        btnSignUp.setOnClickListener() {
             startActivityForResult<SignUpActivity>(0)
         }
 

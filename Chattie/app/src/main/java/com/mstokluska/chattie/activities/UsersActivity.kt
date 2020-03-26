@@ -13,6 +13,7 @@ import com.mstokluska.chattie.adapters.UsersAdapter
 import com.mstokluska.chattie.adapters.UsersListener
 import com.mstokluska.chattie.main.MainApp
 import com.mstokluska.chattie.models.UserModel
+import com.mstokluska.graphql.CreateChatMutation
 import com.mstokluska.graphql.GetUsersQuery
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.activity_users.*
@@ -24,6 +25,7 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
 
     lateinit var app: MainApp
     var user = UserModel()
+    val users = ArrayList<UserModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +37,7 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
         if (intent.hasExtra("user_logged_in")) {
             user = intent.extras.getParcelable<UserModel>("user_logged_in")
         }
-        
+
         val getUsersQuery = GetUsersQuery.builder().build()
 
         app.client
@@ -47,12 +49,11 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
 
                 override fun onResponse(response: Response<GetUsersQuery.Data>) {
                     runOnUiThread {
-
                             val initialUserArray = response.data()!!.allUsers
 
                             initialUserArray.forEach {
                                 if(it.username() != user.userName) {
-                                    app.users.add(UserModel(it.id(), it.username(), it.name()))
+                                    users.add(UserModel(it.id(), it.username(), it.name()))
                                 }
                             }
                         usersRecyclerView.adapter?.notifyDataSetChanged()
@@ -79,14 +80,35 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUserClick(user: UserModel) {
-       toast("User clicked " + user.name)
+    override fun onUserClick(userClicked: UserModel) {
+
+        val createChatMutation = CreateChatMutation.builder()
+            .creator(user.id)
+            .recipent(userClicked.id)
+            .build()
+
+
+        app.client
+            .mutate(createChatMutation)
+            .enqueue(object : ApolloCall.Callback<CreateChatMutation.Data>() {
+                override fun onFailure(e: ApolloException) {
+                    e.printStackTrace()
+                }
+
+                override fun onResponse(response: Response<CreateChatMutation.Data>) {
+
+                    runOnUiThread {
+                        finish()
+                    }
+
+                }
+            })
     }
 
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         usersRecyclerView.layoutManager = layoutManager
-        usersRecyclerView.adapter = UsersAdapter(app.users, this)
+        usersRecyclerView.adapter = UsersAdapter(users, this)
     }
 
 }

@@ -15,7 +15,7 @@ class MainApp : Application(), AnkoLogger {
 
     val client = Client.init()
     val chats = ArrayList<ChatModel>()
-    val users = ArrayList<UserModel>()
+
 
     override fun onCreate() {
         super.onCreate()

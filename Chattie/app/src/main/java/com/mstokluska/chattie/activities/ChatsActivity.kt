@@ -102,13 +102,25 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
 
                         if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
-                            app.chats.add(
-                                ChatModel(
-                                    chatId.toString(),
-                                    chatCreatorUsername.toString(),
-                                    chatRecipentUsername.toString()
+
+                            if(user.userName == chatRecipentUsername){
+                                app.chats.add(
+                                    ChatModel(
+                                        chatId.toString(),
+                                        chatRecipentUsername.toString(),
+                                        chatCreatorUsername.toString()
+                                    )
                                 )
-                            )
+
+                            } else {
+                                app.chats.add(
+                                    ChatModel(
+                                        chatId.toString(),
+                                        chatCreatorUsername.toString(),
+                                        chatRecipentUsername.toString()
+                                    )
+                                )
+                            }
                             recyclerView.adapter?.notifyDataSetChanged()
                         }
                     }
@@ -145,8 +157,10 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                         val indexOfDeleted = app.chats.indexOfFirst {
                             it.id == chatId
                         }
-                        app.chats.removeAt(indexOfDeleted)
-                        recyclerView.adapter?.notifyDataSetChanged()
+                        if( indexOfDeleted != -1) {
+                            app.chats.removeAt(indexOfDeleted)
+                            recyclerView.adapter?.notifyDataSetChanged()
+                        }
                     }
                 }
 

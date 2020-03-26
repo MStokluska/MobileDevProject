@@ -1,0 +1,15 @@
+subscription chatAdded{
+    chatAdded{
+        id
+        creator{
+            id
+            username
+            name
+        }
+        recipent{
+            id
+            username
+            name
+        }
+    }
+}

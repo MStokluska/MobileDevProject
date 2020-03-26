@@ -9,12 +9,10 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.main.MainApp
-import com.mstokluska.chattie.models.user.UserModel
+import com.mstokluska.chattie.models.UserModel
 import com.mstokluska.graphql.CreateUserMutation
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.custom.onUiThread
-import java.lang.Math.log
 
 class SignUpActivity : AppCompatActivity(), AnkoLogger {
 
@@ -32,7 +30,7 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
             user.userName = user_create_Nickname.text.toString()
             user.password = user_create_Password.text.toString()
 
-            if(user.name.isEmpty() or user.userName.isEmpty() or user.password.isEmpty()){
+            if (user.name.isEmpty() or user.userName.isEmpty() or user.password.isEmpty()) {
                 toast("Make sure all fields are filled")
             } else {
 
@@ -74,9 +72,6 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
         }
 
 
-
-        
-
         // menu bar
         toolbarCreateUser.title = title
         setSupportActionBar(toolbarCreateUser)
@@ -87,6 +82,7 @@ class SignUpActivity : AppCompatActivity(), AnkoLogger {
         menuInflater.inflate(R.menu.create_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_cancel -> {

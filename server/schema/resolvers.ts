@@ -1,6 +1,8 @@
-import { Resolvers } from '../types/graphql';
+import { Resolvers, Chat } from '../types/graphql';
 import sql from 'sql-template-strings';
-import { UserInputError, CheckResultAndHandleErrors } from 'apollo-server-express';
+import { UserInputError, PubSub } from 'apollo-server-express';
+import { withFilter } from 'graphql-subscriptions';
+import { pool } from '../db';
 
 const resolvers: Resolvers = {
   Chat: {
@@ -8,14 +10,15 @@ const resolvers: Resolvers = {
       const { rows } = await db.query(sql`
         SELECT * FROM users where users.id = ${chat.creator}
       `);
-      return rows[0];
+
+      return rows[0] || null;
     },
 
     async recipent(chat, args, { db }) {
       const { rows } = await db.query(sql`
         SELECT * FROM users where users.id = ${chat.recipent}
       `);
-      return rows[0];
+      return rows[0] || null;
     },
   },
 
@@ -49,22 +52,16 @@ const resolvers: Resolvers = {
     },
 
     async checkUser(root, args, { db }) {
-     
       const { rows } = await db.query(
         sql`SELECT * FROM users WHERE username = ${args.userName} AND password = ${args.password}`
       );
 
-      if(rows[0] == null){
+      if (rows[0] == null) {
         throw new UserInputError('Incorrect username or password');
-      } 
+      }
 
-      console.log(rows[0])
-
-      
-      return rows[0]
-
+      return rows[0];
     },
-    
 
     async getAllChats(root, args, { db }) {
       const { rows } = await db.query(sql`
@@ -77,6 +74,12 @@ const resolvers: Resolvers = {
       SELECT * FROM chats WHERE chats.id = ${args.chatId}
     `);
       return rows[0];
+    },
+    async getChatForUser(root, args, { db }) {
+      const { rows } = await db.query(sql`
+      SELECT * FROM chats WHERE chats.creator = ${args.userId}
+      `);
+      return rows;
     },
     async getAllMessages(root, args, { db }) {
       const { rows } = await db.query(sql`
@@ -134,19 +137,31 @@ const resolvers: Resolvers = {
       return updateQuery.rows[0];
     },
 
-    async createChat(root, args, { db }) {
-      const createChatQuery = await db.query(sql`
-        INSERT INTO chats(creator, recipent) values(${args.creator},${args.recipent})  RETURNING *;
+    async createChat(root, args, { pubsub, db }) {
+      const { rows } = await db.query(sql`
+        INSERT INTO chats(creator, recipent) values(${args.creator},${args.recipent})  RETURNING *
       `);
 
-      const chat = createChatQuery.rows[0];
-      return chat;
+      const chatAdded = rows[0];
+
+      pubsub.publish('chatAdded', {
+        chatAdded,
+      });
+
+      console.log(chatAdded);
+      return chatAdded;
     },
-    async deleteChat(root, args, { db }) {
+    async deleteChat(root, args, { pubsub, db }) {
       const deleteChatQuery = await db.query(sql`
       DELETE FROM chats where chats.id = ${args.id} RETURNING *;
       `);
-      return deleteChatQuery.rows[0].id;
+
+      const chatDeleted = deleteChatQuery.rows[0].id;
+      pubsub.publish('chatDeleted', {
+        chatDeleted,
+      });
+
+      return chatDeleted;
     },
 
     async createMessage(root, args, { pubsub, db }) {
@@ -164,9 +179,16 @@ const resolvers: Resolvers = {
     },
   },
   Subscription: {
+    chatDeleted: {
+      subscribe: (root, args, { pubsub }) =>
+        pubsub.asyncIterator('chatDeleted'),
+    },
     messageAdded: {
       subscribe: (root, args, { pubsub }) =>
         pubsub.asyncIterator('messageAdded'),
+    },
+    chatAdded: {
+      subscribe: (root, args, { pubsub }) => pubsub.asyncIterator('chatAdded'),
     },
   },
 };

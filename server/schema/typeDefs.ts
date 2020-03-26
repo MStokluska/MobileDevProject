@@ -8,8 +8,8 @@ type User{
 
 type Chat{
     id: ID!
-    creator: User!
-    recipent: User!
+    creator: User
+    recipent: User
 }
 
 type Message{
@@ -27,6 +27,7 @@ type Query{
 
     getAllChats: [Chat!]!
     getChat(chatId: ID!): Chat!
+    getChatForUser(userId: ID!): [Chat!]!
 
     getAllMessages: [Message!]!
     getAMessage(messageId: ID!): Message!
@@ -46,5 +47,7 @@ type Mutation{
 
 type Subscription {
     messageAdded: Message!
+    chatAdded: Chat!
+    chatDeleted: ID!
   }
 `;

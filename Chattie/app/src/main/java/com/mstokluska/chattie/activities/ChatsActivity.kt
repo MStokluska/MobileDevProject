@@ -21,10 +21,7 @@ import com.mstokluska.graphql.DeleteChatMutation
 import com.mstokluska.graphql.GetChatsForUserQuery
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.card_chat.*
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
-import org.jetbrains.anko.startActivityForResult
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 
 
 class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
@@ -175,7 +172,13 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_add_chat -> {
-                startActivityForResult<UsersActivity>(0)
+
+                startActivityForResult(
+                    intentFor<UsersActivity>().putExtra(
+                        "user_logged_in",
+                        user
+                    ), 0
+                )
             }
         }
         return super.onOptionsItemSelected(item)

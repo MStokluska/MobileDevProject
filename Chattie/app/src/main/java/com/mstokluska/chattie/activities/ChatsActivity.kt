@@ -21,10 +21,7 @@ import com.mstokluska.graphql.DeleteChatMutation
 import com.mstokluska.graphql.GetChatsForUserQuery
 import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.card_chat.*
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
-import org.jetbrains.anko.startActivityForResult
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 
 
 class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
@@ -105,13 +102,25 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
 
                         if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
-                            app.chats.add(
-                                ChatModel(
-                                    chatId.toString(),
-                                    chatCreatorUsername.toString(),
-                                    chatRecipentUsername.toString()
+
+                            if(user.userName == chatRecipentUsername){
+                                app.chats.add(
+                                    ChatModel(
+                                        chatId.toString(),
+                                        chatRecipentUsername.toString(),
+                                        chatCreatorUsername.toString()
+                                    )
                                 )
-                            )
+
+                            } else {
+                                app.chats.add(
+                                    ChatModel(
+                                        chatId.toString(),
+                                        chatCreatorUsername.toString(),
+                                        chatRecipentUsername.toString()
+                                    )
+                                )
+                            }
                             recyclerView.adapter?.notifyDataSetChanged()
                         }
                     }
@@ -148,8 +157,10 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                         val indexOfDeleted = app.chats.indexOfFirst {
                             it.id == chatId
                         }
-                        app.chats.removeAt(indexOfDeleted)
-                        recyclerView.adapter?.notifyDataSetChanged()
+                        if( indexOfDeleted != -1) {
+                            app.chats.removeAt(indexOfDeleted)
+                            recyclerView.adapter?.notifyDataSetChanged()
+                        }
                     }
                 }
 
@@ -175,7 +186,13 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_add_chat -> {
-                startActivityForResult<UsersActivity>(0)
+
+                startActivityForResult(
+                    intentFor<UsersActivity>().putExtra(
+                        "user_logged_in",
+                        user
+                    ), 0
+                )
             }
         }
         return super.onOptionsItemSelected(item)

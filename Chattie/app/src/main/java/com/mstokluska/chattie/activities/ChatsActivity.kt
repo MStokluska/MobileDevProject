@@ -29,6 +29,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
     lateinit var app: MainApp
     var user = UserModel()
+    var chats = ArrayList<ChatModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,25 +47,43 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
             .userId(user.id)
             .build()
 
+
         app.client
             .query(getChatsQuery)
             .enqueue(object : ApolloCall.Callback<GetChatsForUserQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
+                    runOnUiThread {
 
+                    }
                 }
 
                 override fun onResponse(response: Response<GetChatsForUserQuery.Data>) {
+
+                    val chatsArray = response.data()!!.chatForUser
+
                     runOnUiThread {
-                        for (name in response.data()!!.chatForUser) {
-                            app.chats.add(
-                                ChatModel(
-                                    name.id(),
-                                    name.creator()!!.username(),
-                                    name.recipent()!!.username()
+                        for (chat in chatsArray) {
+                            if(chat.recipent()!!.username() == user.userName) {
+                                chats.add(
+                                    ChatModel(
+                                        chat.id(),
+                                        chat.recipent()!!.username(),
+                                        chat.creator()!!.username()
+                                    )
                                 )
-                            )
-                            recyclerView.adapter?.notifyDataSetChanged()
+                            } else {
+                                chats.add(
+                                    ChatModel(
+                                        chat.id(),
+                                        chat.creator()!!.username(),
+                                        chat.recipent()!!.username()
+                                    )
+                                )
+                            }
+
+
                         }
+                        recyclerView.adapter?.notifyDataSetChanged()
                     }
                 }
             })
@@ -94,30 +113,30 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                 override fun onResponse(response: Response<ChatAddedSubscription.Data>) {
                     info("SUB SUCCESS")
                     runOnUiThread {
-                        val chatId = response.data()?.chatAdded()?.id()
+                        val chatId = response.data()!!.chatAdded().id()
                         val chatCreatorUsername =
-                            response.data()?.chatAdded()?.creator()?.username()
+                            response.data()!!.chatAdded().creator()!!.username()
                         val chatRecipentUsername =
-                            response.data()?.chatAdded()?.recipent()?.username()
+                            response.data()!!.chatAdded().recipent()!!.username()
 
 
                         if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
 
                             if(user.userName == chatRecipentUsername){
-                                app.chats.add(
+                                chats.add(
                                     ChatModel(
-                                        chatId.toString(),
-                                        chatRecipentUsername.toString(),
-                                        chatCreatorUsername.toString()
+                                        chatId,
+                                        chatRecipentUsername,
+                                        chatCreatorUsername
                                     )
                                 )
 
                             } else {
-                                app.chats.add(
+                                chats.add(
                                     ChatModel(
-                                        chatId.toString(),
-                                        chatCreatorUsername.toString(),
-                                        chatRecipentUsername.toString()
+                                        chatId,
+                                        chatCreatorUsername,
+                                        chatRecipentUsername
                                     )
                                 )
                             }
@@ -154,17 +173,18 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                     info("SUB SUCCESS")
                     runOnUiThread {
                         val chatId = response.data()?.chatDeleted()
-                        val indexOfDeleted = app.chats.indexOfFirst {
+                        val indexOfDeleted = chats.indexOfFirst {
                             it.id == chatId
                         }
                         if( indexOfDeleted != -1) {
-                            app.chats.removeAt(indexOfDeleted)
+                            chats.removeAt(indexOfDeleted)
                             recyclerView.adapter?.notifyDataSetChanged()
                         }
                     }
                 }
 
             })
+
         toolbarChats.title = title
         setSupportActionBar(toolbarChats)
     }
@@ -173,7 +193,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
-        recyclerView.adapter = ChatAdapter(app.chats, this)
+        recyclerView.adapter = ChatAdapter(chats, this)
     }
 
 
@@ -212,7 +232,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
                 override fun onResponse(response: Response<DeleteChatMutation.Data>) {
                     runOnUiThread {
-                        app.chats.remove(chat)
+                        chats.remove(chat)
                         recyclerView.adapter?.notifyDataSetChanged()
                     }
                 }
@@ -220,7 +240,15 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     }
 
     override fun onChatClick(chat: ChatModel) {
-        toast("chat receiver is " + chat.receiver)
+        startActivityForResult(
+            intentFor<ChatRoom>().putExtra(
+                "user_logged_in",
+                 user
+            ).putExtra(
+                "chat_used",
+                chat
+            ), 0
+        )
     }
 
 }

@@ -1,0 +1,9 @@
+query getMessagesPerChat($chatRoomId: ID!){
+    getMessagesForChatRoom(chatRoomId: $chatRoomId){
+        id
+        content
+        mcreator{
+            username
+        }
+    }
+}

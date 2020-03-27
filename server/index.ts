@@ -18,6 +18,7 @@ const server = new ApolloServer({
   context: async () => {
     let db;
     db = await pool.connect();
+    
     return {
       pubsub,
       db,

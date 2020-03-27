@@ -1,0 +1,12 @@
+subscription messageAdded{
+    messageAdded{
+        id
+        content
+        mcreator{
+            username
+        }
+        mchat{
+            id
+        }
+    }
+}

@@ -8,4 +8,5 @@
     <string name="create_user">Create !</string>
     <string name="title_activity_chats">ChatsActivity</string>
     <string name="chatWithText">Chat With :  </string>
+    <string name="message"> Type your message here </string>
 </resources>

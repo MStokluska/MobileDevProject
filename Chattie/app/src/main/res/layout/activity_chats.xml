@@ -24,7 +24,8 @@
                 android:id="@+id/toolbarChats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleTextColor="@color/colorPrimary"/>
+                app:titleTextColor="@color/colorPrimary"
+                android:elevation="5dp"/>
         </android.support.design.widget.AppBarLayout>
 
 

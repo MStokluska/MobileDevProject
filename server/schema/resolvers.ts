@@ -77,7 +77,7 @@ const resolvers: Resolvers = {
     },
     async getChatForUser(root, args, { db }) {
       const { rows } = await db.query(sql`
-      SELECT * FROM chats WHERE chats.creator = ${args.userId}
+      SELECT * FROM chats WHERE chats.creator = ${args.userId} OR chats.recipent = ${args.userId}
       `);
       return rows;
     },
@@ -147,8 +147,6 @@ const resolvers: Resolvers = {
       pubsub.publish('chatAdded', {
         chatAdded,
       });
-
-      console.log(chatAdded);
       return chatAdded;
     },
     async deleteChat(root, args, { pubsub, db }) {

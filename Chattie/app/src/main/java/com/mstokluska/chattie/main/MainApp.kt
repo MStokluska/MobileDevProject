@@ -14,7 +14,7 @@ import org.jetbrains.anko.info
 class MainApp : Application(), AnkoLogger {
 
     val client = Client.init()
-    val chats = ArrayList<ChatModel>()
+   // val chats = ArrayList<ChatModel>()
 
 
     override fun onCreate() {

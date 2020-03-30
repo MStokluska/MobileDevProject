@@ -1,8 +1,10 @@
-import { typeDefs } from './typeDefs';
+import { importSchema } from 'graphql-import';
 import { makeExecutableSchema, IResolvers } from 'graphql-tools';
 import resolvers from './resolvers';
 
+const typeDefs = importSchema('schema/typeDefs.graphql');
+
 export default makeExecutableSchema({
-  typeDefs,
   resolvers: resolvers as IResolvers,
+  typeDefs,
 });

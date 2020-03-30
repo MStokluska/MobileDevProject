@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_chats.*
 import kotlinx.android.synthetic.main.activity_users.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.toast
 
 class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
@@ -74,7 +75,12 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_cancel -> {
-                finish()
+                startActivityForResult(
+                    intentFor<ChatsActivity>().putExtra(
+                        "user_logged_in",
+                        user
+                    ), 0
+                )
             }
         }
         return super.onOptionsItemSelected(item)
@@ -83,8 +89,8 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
     override fun onUserClick(userClicked: UserModel) {
 
         val createChatMutation = CreateChatMutation.builder()
-            .creator(user.id)
-            .recipent(userClicked.id)
+            .creator(user.userName)
+            .recipent(userClicked.userName)
             .build()
 
 

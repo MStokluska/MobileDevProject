@@ -181,7 +181,12 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_cancel -> {
-                finish()
+                startActivityForResult(
+                    intentFor<ChatsActivity>().putExtra(
+                        "user_logged_in",
+                        user
+                    ), 0
+                )
             }
         }
         return super.onOptionsItemSelected(item)

@@ -1,30 +1,28 @@
-import express from 'express';
-import { ApolloServer, gql, PubSub } from 'apollo-server-express';
-import { pool } from './db';
-import cors from 'cors';
+import { ApolloServer } from 'apollo-server-express';
+import { pool, pubsub } from './db';
 import schema from './schema';
 import http from 'http';
-import { port } from './env';
-
-const app = express();
-app.use(express.json());
-
-app.use(cors());
-
-const pubsub = new PubSub();
+import { port, origin } from './env';
+import { app } from './app';
+import { MyContext } from './context';
 
 const server = new ApolloServer({
   schema,
   context: async () => {
-    let db;
-    db = await pool.connect();
-    
+    const db = await pool.connect();
     return {
       pubsub,
       db,
     };
   },
-  formatResponse: (res: any, { context }: any) => {
+  subscriptions: {
+    onConnect(params, ws, ctx) {
+      return {
+        request: ctx.request,
+      };
+    },
+  },
+  formatResponse: (res: any, { context }: { context: any }) => {
     context.db.release();
     return res;
   },
@@ -33,6 +31,7 @@ const server = new ApolloServer({
 server.applyMiddleware({
   app,
   path: '/graphql',
+  cors: { origin },
 });
 
 const httpServer = http.createServer(app);

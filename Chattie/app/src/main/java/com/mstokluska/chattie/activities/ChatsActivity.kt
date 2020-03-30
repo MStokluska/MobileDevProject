@@ -44,7 +44,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
         }
 
         val getChatsQuery = GetChatsForUserQuery.builder()
-            .userId(user.id)
+            .username(user.userName)
             .build()
 
 
@@ -63,20 +63,20 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
                     runOnUiThread {
                         for (chat in chatsArray) {
-                            if(chat.recipent()!!.username() == user.userName) {
+                            if(chat.recipent() == user.userName) {
                                 chats.add(
                                     ChatModel(
                                         chat.id(),
-                                        chat.recipent()!!.username(),
-                                        chat.creator()!!.username()
+                                        chat.recipent(),
+                                        chat.creator()
                                     )
                                 )
                             } else {
                                 chats.add(
                                     ChatModel(
                                         chat.id(),
-                                        chat.creator()!!.username(),
-                                        chat.recipent()!!.username()
+                                        chat.creator(),
+                                        chat.recipent()
                                     )
                                 )
                             }
@@ -115,9 +115,9 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                     runOnUiThread {
                         val chatId = response.data()!!.chatAdded().id()
                         val chatCreatorUsername =
-                            response.data()!!.chatAdded().creator()!!.username()
+                            response.data()!!.chatAdded().creator()
                         val chatRecipentUsername =
-                            response.data()!!.chatAdded().recipent()!!.username()
+                            response.data()!!.chatAdded().recipent()
 
 
                         if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {

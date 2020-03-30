@@ -1,11 +1,7 @@
-mutation createChatMutation($creator: ID!, $recipent: ID!) {
+mutation createChatMutation($creator: String!, $recipent: String!) {
     createChat(creator: $creator, recipent: $recipent) {
         id
-        creator{
-            id
-        }
-        recipent{
-            id
-        }
+        creator
+        recipent
     }
 }

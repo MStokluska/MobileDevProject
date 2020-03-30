@@ -1,26 +1,24 @@
-import { Resolvers, Chat } from '../types/graphql';
+import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
-import { UserInputError, PubSub } from 'apollo-server-express';
-import { withFilter } from 'graphql-subscriptions';
-import { pool } from '../db';
+import { UserInputError } from 'apollo-server-express';
 
 const resolvers: Resolvers = {
-  Chat: {
-    async creator(chat, args, { db }) {
-      const { rows } = await db.query(sql`
-        SELECT * FROM users where users.id = ${chat.creator}
-      `);
+  // Chat: {
+  //   async creator(chat, args, { db }) {
+  //     const { rows } = await db.query(sql`
+  //       SELECT * FROM users where users.id = ${chat.creator}
+  //     `);
 
-      return rows[0] || null;
-    },
+  //     return rows[0] || null;
+  //   },
 
-    async recipent(chat, args, { db }) {
-      const { rows } = await db.query(sql`
-        SELECT * FROM users where users.id = ${chat.recipent}
-      `);
-      return rows[0] || null;
-    },
-  },
+  //   async recipent(chat, args, { db }) {
+  //     const { rows } = await db.query(sql`
+  //       SELECT * FROM users where users.id = ${chat.recipent}
+  //     `);
+  //     return rows[0] || null;
+  //   },
+  // },
 
   Message: {
     async mcreator(message, args, { db }) {
@@ -53,7 +51,7 @@ const resolvers: Resolvers = {
 
     async checkUser(root, args, { db }) {
       const { rows } = await db.query(
-        sql`SELECT * FROM users WHERE username = ${args.userName} AND password = ${args.password}`
+        sql`SELECT * FROM users WHERE username = ${args.username} AND password = ${args.password}`
       );
 
       if (rows[0] == null) {
@@ -77,7 +75,7 @@ const resolvers: Resolvers = {
     },
     async getChatForUser(root, args, { db }) {
       const { rows } = await db.query(sql`
-      SELECT * FROM chats WHERE chats.creator = ${args.userId} OR chats.recipent = ${args.userId}
+      SELECT * FROM chats WHERE chats.creator = ${args.username} OR chats.recipent = ${args.username}
       `);
       return rows;
     },
@@ -144,9 +142,12 @@ const resolvers: Resolvers = {
 
       const chatAdded = rows[0];
 
+      console.log("Publishing chat")
       pubsub.publish('chatAdded', {
         chatAdded,
       });
+
+      console.log("Published!")
       return chatAdded;
     },
     async deleteChat(root, args, { pubsub, db }) {

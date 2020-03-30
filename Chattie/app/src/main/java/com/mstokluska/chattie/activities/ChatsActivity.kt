@@ -91,99 +91,99 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
         val chatAddedSub = ChatAddedSubscription.builder().build()
 
 
-        app.client
-            .subscribe(chatAddedSub)
-            .execute(object : ApolloSubscriptionCall.Callback<ChatAddedSubscription.Data> {
-                override fun onConnected() {
-                    info("SUB CONNECTED")
-                }
-
-                override fun onTerminated() {
-                    info("SUB TERMINATED")
-                }
-
-                override fun onCompleted() {
-                    info("SUB COMPLETED")
-                }
-
-                override fun onFailure(e: ApolloException) {
-                    info("SUB FAILURE")
-                }
-
-                override fun onResponse(response: Response<ChatAddedSubscription.Data>) {
-                    info("SUB SUCCESS")
-                    runOnUiThread {
-                        val chatId = response.data()!!.chatAdded().id()
-                        val chatCreatorUsername =
-                            response.data()!!.chatAdded().creator()!!.username()
-                        val chatRecipentUsername =
-                            response.data()!!.chatAdded().recipent()!!.username()
-
-
-                        if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
-
-                            if(user.userName == chatRecipentUsername){
-                                chats.add(
-                                    ChatModel(
-                                        chatId,
-                                        chatRecipentUsername,
-                                        chatCreatorUsername
-                                    )
-                                )
-
-                            } else {
-                                chats.add(
-                                    ChatModel(
-                                        chatId,
-                                        chatCreatorUsername,
-                                        chatRecipentUsername
-                                    )
-                                )
-                            }
-                            recyclerView.adapter?.notifyDataSetChanged()
-                        }
-                    }
-                }
-
-            })
-
-
-        val chatDeletedSub = ChatDeletedSubscription.builder().build()
-
-        app.client
-            .subscribe(chatDeletedSub)
-            .execute(object : ApolloSubscriptionCall.Callback<ChatDeletedSubscription.Data> {
-                override fun onConnected() {
-                    info("SUB CONNECTED")
-                }
-
-                override fun onTerminated() {
-                    info("SUB TERMINATED")
-                }
-
-                override fun onCompleted() {
-                    info("SUB COMPLETED")
-                }
-
-                override fun onFailure(e: ApolloException) {
-                    info("SUB FAILURE")
-                }
-
-                override fun onResponse(response: Response<ChatDeletedSubscription.Data>) {
-                    info("SUB SUCCESS")
-                    runOnUiThread {
-                        val chatId = response.data()?.chatDeleted()
-                        val indexOfDeleted = chats.indexOfFirst {
-                            it.id == chatId
-                        }
-                        if( indexOfDeleted != -1) {
-                            chats.removeAt(indexOfDeleted)
-                            recyclerView.adapter?.notifyDataSetChanged()
-                        }
-                    }
-                }
-
-            })
+//        app.client
+//            .subscribe(chatAddedSub)
+//            .execute(object : ApolloSubscriptionCall.Callback<ChatAddedSubscription.Data> {
+//                override fun onConnected() {
+//                    info("SUB CONNECTED")
+//                }
+//
+//                override fun onTerminated() {
+//                    info("SUB TERMINATED")
+//                }
+//
+//                override fun onCompleted() {
+//                    info("SUB COMPLETED")
+//                }
+//
+//                override fun onFailure(e: ApolloException) {
+//                    info("SUB FAILURE")
+//                }
+//
+//                override fun onResponse(response: Response<ChatAddedSubscription.Data>) {
+//                    info("SUB SUCCESS")
+//                    runOnUiThread {
+//                        val chatId = response.data()!!.chatAdded().id()
+//                        val chatCreatorUsername =
+//                            response.data()!!.chatAdded().creator()!!.username()
+//                        val chatRecipentUsername =
+//                            response.data()!!.chatAdded().recipent()!!.username()
+//
+//
+//                        if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
+//
+//                            if(user.userName == chatRecipentUsername){
+//                                chats.add(
+//                                    ChatModel(
+//                                        chatId,
+//                                        chatRecipentUsername,
+//                                        chatCreatorUsername
+//                                    )
+//                                )
+//
+//                            } else {
+//                                chats.add(
+//                                    ChatModel(
+//                                        chatId,
+//                                        chatCreatorUsername,
+//                                        chatRecipentUsername
+//                                    )
+//                                )
+//                            }
+//                            recyclerView.adapter?.notifyDataSetChanged()
+//                        }
+//                    }
+//                }
+//
+//            })
+//
+//
+//        val chatDeletedSub = ChatDeletedSubscription.builder().build()
+//
+//        app.client
+//            .subscribe(chatDeletedSub)
+//            .execute(object : ApolloSubscriptionCall.Callback<ChatDeletedSubscription.Data> {
+//                override fun onConnected() {
+//                    info("SUB CONNECTED")
+//                }
+//
+//                override fun onTerminated() {
+//                    info("SUB TERMINATED")
+//                }
+//
+//                override fun onCompleted() {
+//                    info("SUB COMPLETED")
+//                }
+//
+//                override fun onFailure(e: ApolloException) {
+//                    info("SUB FAILURE")
+//                }
+//
+//                override fun onResponse(response: Response<ChatDeletedSubscription.Data>) {
+//                    info("SUB SUCCESS")
+//                    runOnUiThread {
+//                        val chatId = response.data()?.chatDeleted()
+//                        val indexOfDeleted = chats.indexOfFirst {
+//                            it.id == chatId
+//                        }
+//                        if( indexOfDeleted != -1) {
+//                            chats.removeAt(indexOfDeleted)
+//                            recyclerView.adapter?.notifyDataSetChanged()
+//                        }
+//                    }
+//                }
+//
+//            })
 
         toolbarChats.title = title
         setSupportActionBar(toolbarChats)

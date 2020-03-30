@@ -1,8 +1,6 @@
-import { Resolvers, Chat } from '../types/graphql';
+import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
-import { UserInputError, PubSub } from 'apollo-server-express';
-import { withFilter } from 'graphql-subscriptions';
-import { pool } from '../db';
+import { UserInputError } from 'apollo-server-express';
 
 const resolvers: Resolvers = {
   Chat: {

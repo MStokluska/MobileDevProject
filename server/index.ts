@@ -8,8 +8,11 @@ import { MyContext } from './context';
 
 const server = new ApolloServer({
   schema,
-  context: async () => {
-    const db = await pool.connect();
+  context: async (session: any) => {
+    let db;
+    if (!session.connection) {
+      db = await pool.connect();
+    }
     return {
       pubsub,
       db,

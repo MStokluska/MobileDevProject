@@ -2,12 +2,7 @@ mutation addMessageMutation($mcreator: ID!, $mchat: ID!, $content: String!) {
     createMessage(mcreator: $mcreator, mchat: $mchat, content: $content) {
         id
         content
-        mcreator{
-            id
-            username
-        }
-        mchat{
-            id
-        }
+        mcreator
+        mchat
     }
 }

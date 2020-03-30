@@ -57,7 +57,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                     runOnUiThread {
                         for (message in response.data()!!.messagesForChatRoom) {
                             val messageId = message.id()
-                            val messageCreator = message.mcreator().username() + " : "
+                            val messageCreator = message.mcreator() + " : "
                             val chatRoomId = "dummy"
                             val messageContent = message.content()
 
@@ -102,8 +102,8 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                     val messageData = response.data()!!.messageAdded()
                     val messageId = messageData.id()
                     val messageContent = messageData.content()
-                    val messageCreator = messageData.mcreator().username() + " : "
-                    val messageChatId = messageData.mchat().id()
+                    val messageCreator = messageData.mcreator() + " : "
+                    val messageChatId = messageData.mchat()
 
 
                     val messageToAdd =
@@ -112,7 +112,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                     runOnUiThread {
 
                         if (chat.id == messageChatId) {
-                            if (user.userName != messageData.mcreator().username()) {
+                            if (user.userName != messageData.mcreator()) {
                                 messages.add(messageToAdd)
                             }
                             messageRecyclerView.adapter?.notifyDataSetChanged()
@@ -126,7 +126,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
         image_send.setOnClickListener() {
 
             val createMessage = AddMessageMutation.builder()
-                .mcreator(user.id)
+                .mcreator(user.userName)
                 .mchat(chat.id)
                 .content(sendMessage.text.toString())
                 .build()
@@ -142,8 +142,8 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
 
                         val messageData = response.data()!!.createMessage()
                         val messageId = messageData.id()
-                        val messageCreator = messageData.mcreator().username() + " : "
-                        val messageChatId = messageData.mchat().id()
+                        val messageCreator = messageData.mcreator() + " : "
+                        val messageChatId = messageData.mchat()
                         val messageContent = messageData.content()
 
                         val messageToAdd =

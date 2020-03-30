@@ -13,8 +13,8 @@ type Chat{
 
 type Message{
     id: ID!
-    mcreator: User!
-    mchat: Chat!
+    mcreator: String!
+    mchat: ID!
     content: String!
 }
 

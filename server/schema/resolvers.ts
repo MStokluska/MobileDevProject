@@ -3,38 +3,6 @@ import sql from 'sql-template-strings';
 import { UserInputError } from 'apollo-server-express';
 
 const resolvers: Resolvers = {
-  // Chat: {
-  //   async creator(chat, args, { db }) {
-  //     const { rows } = await db.query(sql`
-  //       SELECT * FROM users where users.id = ${chat.creator}
-  //     `);
-
-  //     return rows[0] || null;
-  //   },
-
-  //   async recipent(chat, args, { db }) {
-  //     const { rows } = await db.query(sql`
-  //       SELECT * FROM users where users.id = ${chat.recipent}
-  //     `);
-  //     return rows[0] || null;
-  //   },
-  // },
-
-  Message: {
-    async mcreator(message, args, { db }) {
-      const { rows } = await db.query(sql`
-        SELECT * FROM users where users.id = ${message.mcreator}
-      `);
-      return rows[0];
-    },
-    async mchat(message, args, { db }) {
-      const { rows } = await db.query(sql`
-        SELECT * FROM chats where chats.id = ${message.mchat}
-      `);
-      return rows[0];
-    },
-  },
-
   Query: {
     async getAllUsers(root, args, { db }) {
       const { rows } = await db.query(sql`
@@ -142,12 +110,9 @@ const resolvers: Resolvers = {
 
       const chatAdded = rows[0];
 
-      console.log("Publishing chat")
       pubsub.publish('chatAdded', {
         chatAdded,
       });
-
-      console.log("Published!")
       return chatAdded;
     },
     async deleteChat(root, args, { pubsub, db }) {
@@ -164,17 +129,17 @@ const resolvers: Resolvers = {
     },
 
     async createMessage(root, args, { pubsub, db }) {
-      const createMessageQuery = await db.query(sql`
-        INSERT INTO messages(mcreator, mchat, content) values(${args.mcreator},${args.mchat}, ${args.content})  RETURNING *;
+      const { rows } = await db.query(sql`
+        INSERT INTO messages(mcreator, mchat, content) values(${args.mcreator},${args.mchat}, ${args.content})  RETURNING *
       `);
 
-      const message = createMessageQuery.rows[0];
+      const messageAdded = rows[0];
 
       pubsub.publish('messageAdded', {
-        messageAdded: message,
+        messageAdded,
       });
 
-      return message;
+      return messageAdded;
     },
   },
   Subscription: {

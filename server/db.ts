@@ -42,8 +42,8 @@ async function create() {
     );`);
   await pool.query(sql`CREATE TABLE messages(
                          id SERIAL PRIMARY KEY,
-                         mcreator integer REFERENCES users(id) ON DELETE CASCADE,
-                         mchat integer REFERENCES chats(id) ON DELETE CASCADE,
+                         mcreator varchar(50),
+                         mchat integer,
                          content varchar(255) not null
     );`);
 }

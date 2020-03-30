@@ -7,8 +7,8 @@ type User{
 
 type Chat{
     id: ID!
-    creator: User
-    recipent: User
+    creator: String!
+    recipent: String!
 }
 
 type Message{
@@ -22,11 +22,11 @@ type Query{
 
     getAllUsers: [User!]!
     getUser(userName: String): User!
-    checkUser(userName: String!, password:String!): User!
+    checkUser(username: String!, password:String!): User!
 
     getAllChats: [Chat!]!
     getChat(chatId: ID!): Chat!
-    getChatForUser(userId: ID!): [Chat!]!
+    getChatForUser(username: String!): [Chat!]!
 
     getAllMessages: [Message!]!
     getAMessage(messageId: ID!): Message!
@@ -38,7 +38,7 @@ type Mutation{
     deleteUser(username: String!): String
     editUser(id: ID!, username: String!, name: String!, password: String!): User
 
-    createChat(creator:ID!, recipent:ID!): Chat!
+    createChat(creator:String!, recipent:String!): Chat!
     deleteChat(id:ID!): ID!
 
     createMessage(mcreator:ID!,mchat:ID!,content:String!): Message!

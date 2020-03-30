@@ -1,15 +1,7 @@
-query getChatsForUser($userId: ID!){
-    getChatForUser(userId: $userId){
+query getChatsForUser($username: String!){
+    getChatForUser(username: $username){
         id
-        creator{
-            name
-            username
-            id
-        }
-        recipent{
-            name
-            username
-            id
-        }
+        creator
+        recipent
     }
 }

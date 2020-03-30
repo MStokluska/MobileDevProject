@@ -89,8 +89,8 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
     override fun onUserClick(userClicked: UserModel) {
 
         val createChatMutation = CreateChatMutation.builder()
-            .creator(user.id)
-            .recipent(userClicked.id)
+            .creator(user.userName)
+            .recipent(userClicked.userName)
             .build()
 
 

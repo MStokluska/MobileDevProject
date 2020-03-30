@@ -35,7 +35,7 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
             } else {
 
                 val checkUserQuery = CheckUserQuery.builder()
-                    .userName(user.userName)
+                    .username(user.userName)
                     .password(user.password)
                     .build()
 

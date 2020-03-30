@@ -72,7 +72,7 @@
               "description": "",
               "args": [
                 {
-                  "name": "userName",
+                  "name": "username",
                   "description": "",
                   "type": {
                     "kind": "NON_NULL",
@@ -172,14 +172,14 @@
               "description": "",
               "args": [
                 {
-                  "name": "userId",
+                  "name": "username",
                   "description": "",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -427,9 +427,13 @@
               "description": "",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "User",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -439,9 +443,13 @@
               "description": "",
               "args": [],
               "type": {
-                "kind": "OBJECT",
-                "name": "User",
-                "ofType": null
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               },
               "isDeprecated": false,
               "deprecationReason": null
@@ -695,7 +703,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "String",
                       "ofType": null
                     }
                   },
@@ -709,7 +717,7 @@
                     "name": null,
                     "ofType": {
                       "kind": "SCALAR",
-                      "name": "ID",
+                      "name": "String",
                       "ofType": null
                     }
                   },

@@ -1,5 +1,5 @@
-query checkUser($userName: String!, $password: String!){
-    checkUser(userName: $userName, password: $password){
+query checkUser($username: String!, $password: String!){
+    checkUser(username: $username, password: $password){
         username
         name
         password

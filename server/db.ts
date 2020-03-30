@@ -37,8 +37,8 @@ async function create() {
                         );`);
   await pool.query(sql`CREATE TABLE chats(
                         id SERIAL PRIMARY KEY,
-                        creator integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                        recipent integer NOT NULL REFERENCES users(id) ON DELETE CASCADE
+                        creator varchar(50) NOT NULL,
+                        recipent varchar(50) NOT NULL
     );`);
   await pool.query(sql`CREATE TABLE messages(
                          id SERIAL PRIMARY KEY,

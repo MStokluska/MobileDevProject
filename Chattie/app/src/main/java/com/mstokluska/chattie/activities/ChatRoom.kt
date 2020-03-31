@@ -35,12 +35,12 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
         setContentView(R.layout.activity_chat_room)
         app = application as MainApp
 
-        setupRecyclerView()
-
         if (intent.hasExtra("user_logged_in")) {
             user = intent.extras.getParcelable<UserModel>("user_logged_in")
             chat = intent.extras.getParcelable<ChatModel>("chat_used")
         }
+
+        setupRecyclerView()
 
         val getMessagesPerChat = GetMessagesPerChatQuery.builder()
             .chatRoomId(chat.id)
@@ -168,7 +168,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         messageRecyclerView.layoutManager = layoutManager
-        messageRecyclerView.adapter = MessageAdapter(messages, this)
+        messageRecyclerView.adapter = MessageAdapter(messages, this, user)
     }
 
 

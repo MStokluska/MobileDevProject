@@ -7,14 +7,17 @@ import com.mstokluska.chattie.adapters.ChatListener
 import com.mstokluska.chattie.adapters.MessagesListener
 import com.mstokluska.chattie.models.ChatModel
 import com.mstokluska.chattie.models.MessageModel
+import com.mstokluska.chattie.models.UserModel
 import kotlinx.android.synthetic.main.card_chat.view.*
 import kotlinx.android.synthetic.main.card_message.view.*
+import kotlinx.android.synthetic.main.card_user.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
 
 class MessageAdapter constructor(private var messages: List<MessageModel>,
-                                 private var listener: MessagesListener ) : RecyclerView.Adapter<MessageAdapter.MainHolder>() {
+                                 private var listener: MessagesListener,
+                                 private var user: UserModel) : RecyclerView.Adapter<MessageAdapter.MainHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -24,18 +27,26 @@ class MessageAdapter constructor(private var messages: List<MessageModel>,
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
 
         val message = messages[holder.adapterPosition]
+        val user = user
 
-        holder.bind(message, listener)
+        holder.bind(message, listener, user)
     }
 
     override fun getItemCount(): Int = messages.size
 
     class MainHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(message: MessageModel, listener: MessagesListener) {
+        fun bind(message: MessageModel, listener: MessagesListener, user: UserModel) {
 
+            val currentUser = user.userName + " : "
+            if(message.mcreator == currentUser) {
+                itemView.setBackgroundResource(R.drawable.my_message)
+                itemView.messageSender.text = "You : "
+            } else {
+                itemView.setBackgroundResource(R.drawable.not_my_message)
+                itemView.messageSender.text = message.mcreator
+            }
             itemView.message.text = message.content
-            itemView.messageSender.text = message.mcreator
             itemView.setOnClickListener { listener.onMessageClick(message) }
 
         }

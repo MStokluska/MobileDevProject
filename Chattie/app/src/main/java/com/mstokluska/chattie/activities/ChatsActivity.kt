@@ -206,7 +206,6 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_add_chat -> {
-
                 startActivityForResult(
                     intentFor<UsersActivity>().putExtra(
                         "user_logged_in",

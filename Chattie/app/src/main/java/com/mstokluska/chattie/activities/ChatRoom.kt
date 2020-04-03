@@ -163,6 +163,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
 
         toolbarChatRoom.title = title
         setSupportActionBar(toolbarChatRoom)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun setupRecyclerView() {
@@ -187,6 +188,10 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                         user
                     ), 0
                 )
+            }
+
+            android.R.id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)

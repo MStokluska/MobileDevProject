@@ -4,7 +4,6 @@ import schema from './schema';
 import http from 'http';
 import { port, origin } from './env';
 import { app } from './app';
-import { MyContext } from './context';
 
 const server = new ApolloServer({
   schema,

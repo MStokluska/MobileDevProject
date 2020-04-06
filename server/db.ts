@@ -1,7 +1,6 @@
 import { Pool } from 'pg';
 import { createDb as envCreateDb } from './env';
 import sql from 'sql-template-strings';
-const { PostgresPubSub } = require('graphql-postgres-subscriptions');
 
 export const dbConfig = {
   host: 'localhost',
@@ -12,14 +11,6 @@ export const dbConfig = {
 };
 
 export let pool: Pool = new Pool(dbConfig);
-
-export const pubsub = new PostgresPubSub({
-  host: 'localhost',
-  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
-  user: 'testuser',
-  password: 'testpassword',
-  database: 'mobileapp',
-});
 
 if (envCreateDb) {
   create();

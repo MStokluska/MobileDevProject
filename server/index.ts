@@ -1,5 +1,6 @@
 import { ApolloServer } from 'apollo-server-express';
-import { pool, pubsub } from './db';
+import { pool } from './db';
+import { pubsub } from './mqtt'
 import schema from './schema';
 import http from 'http';
 import { port, origin } from './env';

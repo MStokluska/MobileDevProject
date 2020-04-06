@@ -3,7 +3,7 @@ import { createDb as envCreateDb } from './env';
 import sql from 'sql-template-strings';
 
 export const dbConfig = {
-  host: 'localhost',
+  host: process.env.DB_HOST || 'localhost',
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
   user: 'testuser',
   password: 'testpassword',

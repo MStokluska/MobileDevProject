@@ -9,4 +9,9 @@ services:
       POSTGRES_DB: mobileapp
       POSTGRES_USER: testuser
       POSTGRES_PASSWORD: testpassword
+  mosca:
+    image: matteocollina/mosca
+    ports:
+      - "1883:1883" # MQTT
+      - "80:80" # web interface
       

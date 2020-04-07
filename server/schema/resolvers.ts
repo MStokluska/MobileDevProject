@@ -1,9 +1,15 @@
 import { Resolvers } from '../types/graphql';
 import sql from 'sql-template-strings';
 import { UserInputError } from 'apollo-server-express';
+import { getIntrospectionQuery } from 'graphql';
+const publicIp = require('public-ip')
 
 const resolvers: Resolvers = {
   Query: {
+    async getIp(){
+      
+      return await publicIp.v4()
+    },
     async getAllUsers(root, args, { db }) {
       const { rows } = await db.query(sql`
         SELECT * FROM users

@@ -19,6 +19,13 @@
             android:background="#ffffff"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/serverIp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+
+                />
 
             <ImageView
                 android:id="@+id/chattieLogo"
@@ -97,6 +104,8 @@
                 android:text="@string/sign_up"
                 android:textColor="@color/whiteFont"
                 android:textSize="13sp" />
+
+
         </LinearLayout>
 
     </RelativeLayout>

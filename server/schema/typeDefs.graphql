@@ -21,6 +21,7 @@ type Message{
 type Query{
 
     getAllUsers: [User!]!
+    getIp: String!
     getUser(userName: String): User!
     checkUser(username: String!, password:String!): User!
 

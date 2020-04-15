@@ -26,23 +26,24 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
         setContentView(R.layout.log_in_activity)
         app = application as MainApp
 
-        val getIp = GetIpQuery.builder().build()
 
-        app.client
-            .query(getIp)
-            .enqueue(object: ApolloCall.Callback<GetIpQuery.Data>(){
+            val getIp = GetIpQuery.builder().build()
 
-                override fun onFailure(e: ApolloException) {
+            app.client
+                .query(getIp)
+                .enqueue(object : ApolloCall.Callback<GetIpQuery.Data>() {
 
-                }
+                    override fun onFailure(e: ApolloException) {
 
-                override fun onResponse(response: Response<GetIpQuery.Data>) {
-                    runOnUiThread{
-                        serverIp.text = "Server IP is " + response.data()!!.ip
                     }
 
-                }
-            })
+                    override fun onResponse(response: Response<GetIpQuery.Data>) {
+                        runOnUiThread {
+                            serverIp.text = "Server IP is " + response.data()!!.ip
+                        }
+
+                    }
+                })
 
 
         btnSignIn.setOnClickListener() {

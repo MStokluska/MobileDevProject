@@ -7,7 +7,13 @@ import okhttp3.OkHttpClient
 
 object Client {
 
-    var SERVER_URL = "http://10.0.2.2:4000/graphql"
+
+    // Local development SERVER URL:
+    //var SERVER_URL = "http://54.194.196.137:4000/graphql"
+
+
+    // AMAZON URL :
+    var SERVER_URL = "http://chattieloadbalancer-1516544678.eu-west-1.elb.amazonaws.com:4000/graphql"
 
     var okHttpClient =
         OkHttpClient.Builder()

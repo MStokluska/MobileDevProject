@@ -2,7 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
+    <item
+        android:id="@+id/editMenu"
+        android:title="@string/changeDetails"
+        />
+    <item
+        android:id="@+id/logout"
+        android:title="@string/logout"
+        />
     <item
         android:id="@+id/item_add_chat"
         android:icon="@android:drawable/stat_notify_chat"

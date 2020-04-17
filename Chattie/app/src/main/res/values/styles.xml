@@ -10,6 +10,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorMain</item>
         <item name="colorAccent">@color/whiteFont</item>
+        <item name="colorControlNormal">@color/whiteFont</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

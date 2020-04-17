@@ -26,7 +26,6 @@ import org.jetbrains.anko.*
 class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
 
     lateinit var app: MainApp
-    var user = UserModel()
     var chat = ChatModel()
     var messages = ArrayList<MessageModel>()
 
@@ -35,8 +34,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
         setContentView(R.layout.activity_chat_room)
         app = application as MainApp
 
-        if (intent.hasExtra("user_logged_in")) {
-            user = intent.extras.getParcelable<UserModel>("user_logged_in")
+        if (intent.hasExtra("chat_used")) {
             chat = intent.extras.getParcelable<ChatModel>("chat_used")
         }
 
@@ -70,6 +68,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                                 )
                             )
                             messageRecyclerView.adapter?.notifyDataSetChanged()
+                            messageRecyclerView.scrollToPosition(messages.size -1)
                         }
                     }
                 }
@@ -112,10 +111,11 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                     runOnUiThread {
 
                         if (chat.id == messageChatId) {
-                            if (user.userName != messageData.mcreator()) {
+                            if (app.currentUser.userName != messageData.mcreator()) {
                                 messages.add(messageToAdd)
                             }
                             messageRecyclerView.adapter?.notifyDataSetChanged()
+                            messageRecyclerView.scrollToPosition(messages.size -1)
                         }
                     }
                 }
@@ -126,7 +126,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
         image_send.setOnClickListener() {
 
             val createMessage = AddMessageMutation.builder()
-                .mcreator(user.userName)
+                .mcreator(app.currentUser.userName)
                 .mchat(chat.id)
                 .content(sendMessage.text.toString())
                 .build()
@@ -154,14 +154,18 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
 
                             sendMessage.text!!.clear()
                             messageRecyclerView.adapter?.notifyDataSetChanged()
-
+                            messageRecyclerView.scrollToPosition(messages.size -1)
                             KeyboardClose.hideSoftKeyBoard(this@ChatRoom, it.rootView)
                         }
                     }
                 })
         }
 
-        toolbarChatRoom.title = title
+        if(app.currentUser.userName == chat.receiver) {
+            toolbarChatRoom.title = chat.creator
+        } else {
+            toolbarChatRoom.title = chat.receiver
+        }
         setSupportActionBar(toolbarChatRoom)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -169,7 +173,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         messageRecyclerView.layoutManager = layoutManager
-        messageRecyclerView.adapter = MessageAdapter(messages, this, user)
+        messageRecyclerView.adapter = MessageAdapter(messages, this, app.currentUser)
     }
 
 
@@ -181,15 +185,6 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.item_cancel -> {
-                startActivityForResult(
-                    intentFor<ChatsActivity>().putExtra(
-                        "user_logged_in",
-                        user
-                    ), 0
-                )
-            }
-
             android.R.id.home -> {
                 finish()
             }

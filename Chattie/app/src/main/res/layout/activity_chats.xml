@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/whiteFont"
     tools:context="com.mstokluska.chattie.activities.ChatsActivity">
 
     <RelativeLayout
@@ -24,8 +24,9 @@
                 android:id="@+id/toolbarChats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleTextColor="@color/colorPrimary"
+                app:titleTextColor="@color/whiteFont"
                 android:elevation="5dp"/>
+
         </android.support.design.widget.AppBarLayout>
 
 
@@ -42,7 +43,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="55dp"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

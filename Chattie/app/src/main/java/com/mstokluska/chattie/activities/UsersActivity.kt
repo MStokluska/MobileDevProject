@@ -25,7 +25,6 @@ import org.jetbrains.anko.toast
 class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
 
     lateinit var app: MainApp
-    var user = UserModel()
     val users = ArrayList<UserModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +33,6 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
         app = application as MainApp
 
        setupRecyclerView()
-
-        if (intent.hasExtra("user_logged_in")) {
-            user = intent.extras.getParcelable<UserModel>("user_logged_in")
-        }
 
         val getUsersQuery = GetUsersQuery.builder().build()
 
@@ -53,7 +48,7 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
                             val initialUserArray = response.data()!!.allUsers
 
                             initialUserArray.forEach {
-                                if(it.username() != user.userName) {
+                                if(it.username() != app.currentUser.userName) {
                                     users.add(UserModel(it.id(), it.username(), it.name()))
                                 }
                             }
@@ -62,8 +57,9 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
                     }
             })
 
-        toolbarChatWithUser.title = title
+        toolbarChatWithUser.title = "Users"
         setSupportActionBar(toolbarChatWithUser)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -74,13 +70,8 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.item_cancel -> {
-                startActivityForResult(
-                    intentFor<ChatsActivity>().putExtra(
-                        "user_logged_in",
-                        user
-                    ), 0
-                )
+            android.R.id.home -> {
+                finish()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -89,7 +80,7 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
     override fun onUserClick(userClicked: UserModel) {
 
         val createChatMutation = CreateChatMutation.builder()
-            .creator(user.userName)
+            .creator(app.currentUser.userName)
             .recipent(userClicked.userName)
             .build()
 

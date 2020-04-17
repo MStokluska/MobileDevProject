@@ -9,4 +9,7 @@
          and text fields.  -->
     <color name="whiteFont">#ffffff</color>
     <color name="background">#ffffff</color>
+    <color name="background_main">#dfb8fc</color>
+    <color name="background_gradient">#c68adb</color>
+    <color name="card_color">#eee1f2</color>
 </resources>

@@ -3,20 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
     android:elevation="20dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/user_and_chat_card"
         android:padding="16dp">
 
         <TextView
             android:id="@+id/chatWith"
-            android:layout_width="199dp"
+            android:layout_width="245dp"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@id/chatWithText"
-            android:layout_marginEnd="-210dp"
+            android:layout_marginEnd="-254dp"
             android:textColor="@color/colorPrimary"
             android:textSize="15sp" />
 

@@ -19,7 +19,6 @@ import org.jetbrains.anko.*
 class LogInActivity : AppCompatActivity(), AnkoLogger {
 
     lateinit var app: MainApp
-    var user = UserModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,17 +45,13 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
 
 
         btnSignIn.setOnClickListener() {
-            user.userName = userNickname.text.toString()
-            user.password = userPassword.text.toString()
-
-
-            if (user.userName.isEmpty() or user.password.isEmpty()) {
+            if (userNickname.text.toString().isEmpty() or userPassword.text.toString().isEmpty()) {
                 toast("Username and Password are required")
             } else {
 
                 val checkUserQuery = CheckUserQuery.builder()
-                    .username(user.userName)
-                    .password(user.password)
+                    .username(userNickname.text.toString())
+                    .password(userPassword.text.toString())
                     .build()
 
                 app.client
@@ -73,17 +68,12 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
 
                             runOnUiThread {
                                 if (resultUserName != null) {
-                                    user.id = response.data()!!.checkUser().id()
-                                    user.name = response.data()!!.checkUser().name()
-                                    user.userName = response.data()!!.checkUser().username()
-                                    user.password = response.data()!!.checkUser().password()
+                                    app.currentUser.id = response.data()!!.checkUser().id()
+                                    app.currentUser.name = response.data()!!.checkUser().name()
+                                    app.currentUser.userName = response.data()!!.checkUser().username()
+                                    app.currentUser.password = response.data()!!.checkUser().password()
 
-                                    startActivityForResult(
-                                        intentFor<ChatsActivity>().putExtra(
-                                            "user_logged_in",
-                                            user
-                                        ), 0
-                                    )
+                                    startActivityForResult<ChatsActivity>(0)
 
                                 } else {
                                     toast("Incorrect username or password")

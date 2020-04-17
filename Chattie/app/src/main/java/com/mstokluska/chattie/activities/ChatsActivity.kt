@@ -28,7 +28,6 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
 
     lateinit var app: MainApp
-    var user = UserModel()
     var chats = ArrayList<ChatModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +37,8 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
         setupRecyclerView()
 
-
-        if (intent.hasExtra("user_logged_in")) {
-            user = intent.extras.getParcelable<UserModel>("user_logged_in")
-        }
-
         val getChatsQuery = GetChatsForUserQuery.builder()
-            .username(user.userName)
+            .username(app.currentUser.userName)
             .build()
 
 
@@ -63,7 +57,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
                     runOnUiThread {
                         for (chat in chatsArray) {
-                            if(chat.recipent() == user.userName) {
+                            if(chat.recipent() == app.currentUser.userName) {
                                 chats.add(
                                     ChatModel(
                                         chat.id(),
@@ -120,9 +114,9 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                             response.data()!!.chatAdded().recipent()
 
 
-                        if (user.userName == chatCreatorUsername || user.userName == chatRecipentUsername) {
+                        if (app.currentUser.userName == chatCreatorUsername || app.currentUser.userName == chatRecipentUsername) {
 
-                            if(user.userName == chatRecipentUsername){
+                            if(app.currentUser.userName == chatRecipentUsername){
                                 chats.add(
                                     ChatModel(
                                         chatId,
@@ -185,7 +179,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
             })
 
-        toolbarChats.title = title
+        toolbarChats.title = "Chats"
         setSupportActionBar(toolbarChats)
     }
 
@@ -206,12 +200,15 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.item_add_chat -> {
-                startActivityForResult(
-                    intentFor<UsersActivity>().putExtra(
-                        "user_logged_in",
-                        user
-                    ), 0
-                )
+                startActivityForResult<UsersActivity>(0)
+            }
+            R.id.logout -> {
+                app.currentUser.userName = ""
+                app.currentUser.password = ""
+                startActivityForResult<LogInActivity>(0)
+            }
+            R.id.editMenu -> {
+                startActivityForResult<SignUpActivity>(0)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -241,9 +238,6 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
     override fun onChatClick(chat: ChatModel) {
         startActivityForResult(
             intentFor<ChatRoom>().putExtra(
-                "user_logged_in",
-                 user
-            ).putExtra(
                 "chat_used",
                 chat
             ), 0

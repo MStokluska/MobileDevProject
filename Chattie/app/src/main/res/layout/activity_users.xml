@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/whiteFont"
     tools:context="com.mstokluska.chattie.activities.LogInActivity">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,14 +17,13 @@
             android:layout_height="wrap_content"
             android:background="@color/colorMain"
             android:fitsSystemWindows="true"
-            app:elevation="0dip"
             app:theme="@style/AppTheme">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbarChatWithUser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleTextColor="@color/colorPrimary"/>
+                app:titleTextColor="@color/whiteFont"/>
         </android.support.design.widget.AppBarLayout>
 
         <LinearLayout
@@ -34,14 +34,13 @@
         </LinearLayout>
 
 
-
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/usersRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="55dp"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 

@@ -14,6 +14,7 @@ import org.jetbrains.anko.info
 class MainApp : Application(), AnkoLogger {
 
     val client = Client.init()
+    var currentUser =  UserModel()
    // val chats = ArrayList<ChatModel>()
 
 

@@ -1,7 +1,10 @@
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.adapters.ChatListener
 import com.mstokluska.chattie.adapters.MessagesListener
@@ -37,8 +40,8 @@ class MessageAdapter constructor(private var messages: List<MessageModel>,
     class MainHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(message: MessageModel, listener: MessagesListener, user: UserModel) {
-
             val currentUser = user.userName + " : "
+
             if(message.mcreator == currentUser) {
                 itemView.setBackgroundResource(R.drawable.my_message)
                 itemView.messageSender.text = "You : "
@@ -46,6 +49,7 @@ class MessageAdapter constructor(private var messages: List<MessageModel>,
                 itemView.setBackgroundResource(R.drawable.not_my_message)
                 itemView.messageSender.text = message.mcreator
             }
+
             itemView.message.text = message.content
             itemView.setOnClickListener { listener.onMessageClick(message) }
 

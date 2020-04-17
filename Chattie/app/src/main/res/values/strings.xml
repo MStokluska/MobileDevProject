@@ -9,4 +9,6 @@
     <string name="title_activity_chats">ChatsActivity</string>
     <string name="chatWithText">Chat With :  </string>
     <string name="message"> Type your message here </string>
+    <string name="changeDetails">Edit user details</string>
+    <string name="logout">Log Out</string>
 </resources>

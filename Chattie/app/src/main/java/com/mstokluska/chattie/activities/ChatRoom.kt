@@ -111,7 +111,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                     runOnUiThread {
 
                         if (chat.id == messageChatId) {
-                            if (app.currentUser.userName != messageData.mcreator()) {
+                            if (app.users.currentUser.userName != messageData.mcreator()) {
                                 messages.add(messageToAdd)
                             }
                             messageRecyclerView.adapter?.notifyDataSetChanged()
@@ -126,7 +126,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
         image_send.setOnClickListener() {
 
             val createMessage = AddMessageMutation.builder()
-                .mcreator(app.currentUser.userName)
+                .mcreator(app.users.currentUser.userName)
                 .mchat(chat.id)
                 .content(sendMessage.text.toString())
                 .build()
@@ -161,7 +161,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
                 })
         }
 
-        if(app.currentUser.userName == chat.receiver) {
+        if(app.users.currentUser.userName == chat.receiver) {
             toolbarChatRoom.title = chat.creator
         } else {
             toolbarChatRoom.title = chat.receiver
@@ -173,7 +173,7 @@ class ChatRoom : AppCompatActivity(), AnkoLogger, MessagesListener {
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         messageRecyclerView.layoutManager = layoutManager
-        messageRecyclerView.adapter = MessageAdapter(messages, this, app.currentUser)
+        messageRecyclerView.adapter = MessageAdapter(messages, this, app.users.currentUser)
     }
 
 

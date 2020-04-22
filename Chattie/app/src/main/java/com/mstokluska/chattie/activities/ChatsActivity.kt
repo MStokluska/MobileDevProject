@@ -13,6 +13,7 @@ import com.apollographql.apollo.exception.ApolloException
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.adapters.ChatListener
 import com.mstokluska.chattie.main.MainApp
+import com.mstokluska.chattie.models.ChatMemStore
 import com.mstokluska.chattie.models.ChatModel
 import com.mstokluska.chattie.models.UserModel
 import com.mstokluska.graphql.ChatAddedSubscription
@@ -26,9 +27,8 @@ import org.jetbrains.anko.*
 
 class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
-
     lateinit var app: MainApp
-    var chats = ArrayList<ChatModel>()
+    var chats = ChatMemStore()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,27 +38,22 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
         setupRecyclerView()
 
         val getChatsQuery = GetChatsForUserQuery.builder()
-            .username(app.currentUser.userName)
+            .username(app.users.currentUser.userName)
             .build()
-
 
         app.client
             .query(getChatsQuery)
             .enqueue(object : ApolloCall.Callback<GetChatsForUserQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
-                    runOnUiThread {
-
-                    }
+                    info(e)
                 }
 
                 override fun onResponse(response: Response<GetChatsForUserQuery.Data>) {
-
                     val chatsArray = response.data()!!.chatForUser
-
                     runOnUiThread {
                         for (chat in chatsArray) {
-                            if(chat.recipent() == app.currentUser.userName) {
-                                chats.add(
+                            if (chat.recipent() == app.users.currentUser.userName) {
+                                chats.addChat(
                                     ChatModel(
                                         chat.id(),
                                         chat.recipent(),
@@ -66,7 +61,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                                     )
                                 )
                             } else {
-                                chats.add(
+                                chats.addChat(
                                     ChatModel(
                                         chat.id(),
                                         chat.creator(),
@@ -74,16 +69,12 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                                     )
                                 )
                             }
-
-
                         }
                         recyclerView.adapter?.notifyDataSetChanged()
                     }
                 }
             })
-
         val chatAddedSub = ChatAddedSubscription.builder().build()
-
 
         app.client
             .subscribe(chatAddedSub)
@@ -113,11 +104,9 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                         val chatRecipentUsername =
                             response.data()!!.chatAdded().recipent()
 
-
-                        if (app.currentUser.userName == chatCreatorUsername || app.currentUser.userName == chatRecipentUsername) {
-
-                            if(app.currentUser.userName == chatRecipentUsername){
-                                chats.add(
+                        if (app.users.currentUser.userName == chatCreatorUsername || app.users.currentUser.userName == chatRecipentUsername) {
+                            if (app.users.currentUser.userName == chatRecipentUsername) {
+                                chats.addChat(
                                     ChatModel(
                                         chatId,
                                         chatRecipentUsername,
@@ -126,7 +115,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                                 )
 
                             } else {
-                                chats.add(
+                                chats.addChat(
                                     ChatModel(
                                         chatId,
                                         chatCreatorUsername,
@@ -138,7 +127,6 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                         }
                     }
                 }
-
             })
 
 
@@ -167,11 +155,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                     info("SUB SUCCESS")
                     runOnUiThread {
                         val chatId = response.data()?.chatDeleted()
-                        val indexOfDeleted = chats.indexOfFirst {
-                            it.id == chatId
-                        }
-                        if( indexOfDeleted != -1) {
-                            chats.removeAt(indexOfDeleted)
+                        if (chats.removeChat(chatId)) {
                             recyclerView.adapter?.notifyDataSetChanged()
                         }
                     }
@@ -179,23 +163,20 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
             })
 
-        toolbarChats.title = "Chats"
+        toolbarChats.title = getString(R.string.chats)
         setSupportActionBar(toolbarChats)
     }
 
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
-
-        recyclerView.adapter = ChatAdapter(chats, this)
+        recyclerView.adapter = ChatAdapter(chats.chatsArray, this)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.chats_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
-
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
@@ -203,8 +184,9 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
                 startActivityForResult<UsersActivity>(0)
             }
             R.id.logout -> {
-                app.currentUser.userName = ""
-                app.currentUser.password = ""
+                app.users.currentUser.userName = ""
+                app.users.currentUser.name = ""
+                app.users.currentUser.password = ""
                 startActivityForResult<LogInActivity>(0)
             }
             R.id.editMenu -> {
@@ -228,7 +210,7 @@ class ChatsActivity : AppCompatActivity(), AnkoLogger, ChatListener {
 
                 override fun onResponse(response: Response<DeleteChatMutation.Data>) {
                     runOnUiThread {
-                        chats.remove(chat)
+                        chats.removeChat(chat.id)
                         recyclerView.adapter?.notifyDataSetChanged()
                     }
                 }

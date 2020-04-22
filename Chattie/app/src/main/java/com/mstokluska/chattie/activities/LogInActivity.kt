@@ -26,29 +26,24 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
         app = application as MainApp
 
         val getIp = GetIpQuery.builder().build()
-
         app.client
             .query(getIp)
-            .enqueue(object: ApolloCall.Callback<GetIpQuery.Data>(){
-
+            .enqueue(object : ApolloCall.Callback<GetIpQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
-
+                    info(e)
                 }
 
                 override fun onResponse(response: Response<GetIpQuery.Data>) {
-                    runOnUiThread{
-                        serverIp.text = "Server IP is " + response.data()!!.ip
+                    runOnUiThread {
+                        serverIp.text = getString(R.string.serverIp) + response.data()!!.ip
                     }
-
                 }
             })
 
-
         btnSignIn.setOnClickListener() {
             if (userNickname.text.toString().isEmpty() or userPassword.text.toString().isEmpty()) {
-                toast("Username and Password are required")
+                toast(getString(R.string.userPasswordRequired))
             } else {
-
                 val checkUserQuery = CheckUserQuery.builder()
                     .username(userNickname.text.toString())
                     .password(userPassword.text.toString())
@@ -57,41 +52,32 @@ class LogInActivity : AppCompatActivity(), AnkoLogger {
                 app.client
                     .query(checkUserQuery)
                     .enqueue(object : ApolloCall.Callback<CheckUserQuery.Data>() {
-
                         override fun onFailure(e: ApolloException) {
-
+                            info(e)
                         }
 
                         override fun onResponse(response: Response<CheckUserQuery.Data>) {
-
                             val resultUserName = response.data()?.checkUser()?.username()
 
                             runOnUiThread {
                                 if (resultUserName != null) {
-                                    app.currentUser.id = response.data()!!.checkUser().id()
-                                    app.currentUser.name = response.data()!!.checkUser().name()
-                                    app.currentUser.userName = response.data()!!.checkUser().username()
-                                    app.currentUser.password = response.data()!!.checkUser().password()
-
+                                    app.users.currentUser.id = response.data()!!.checkUser().id()
+                                    app.users.currentUser.name = response.data()!!.checkUser().name()
+                                    app.users.currentUser.userName =
+                                        response.data()!!.checkUser().username()
+                                    app.users.currentUser.password =
+                                        response.data()!!.checkUser().password()
                                     startActivityForResult<ChatsActivity>(0)
-
                                 } else {
-                                    toast("Incorrect username or password")
+                                    toast(getString(R.string.incorrectDetails))
                                 }
                             }
-
                         }
                     })
-
-
             }
-
-
         }
-
         btnSignUp.setOnClickListener() {
             startActivityForResult<SignUpActivity>(0)
         }
-
     }
 }

@@ -11,4 +11,15 @@
     <string name="message"> Type your message here </string>
     <string name="changeDetails">Edit user details</string>
     <string name="logout">Log Out</string>
+    <string name="serverIp">Server IP: </string>
+    <string name="userPasswordRequired">Username and Password are required</string>
+    <string name="update">Update</string>
+    <string name="editDetails">Edit Details</string>
+    <string name="allFields">Make sure all fields are filled</string>
+    <string name="userCreated">User Created!</string>
+    <string name="userNameTaken">Sorry, username already taken</string>
+    <string name="userUpdated">User Updated!</string>
+    <string name="incorrectDetails">Incorrect username or password</string>
+    <string name="chats">Chats</string>
+    <string name="users">Create Chat</string>
 </resources>

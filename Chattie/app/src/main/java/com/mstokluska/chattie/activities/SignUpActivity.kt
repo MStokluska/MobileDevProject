@@ -12,6 +12,7 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.mstokluska.chattie.R
 import com.mstokluska.chattie.main.MainApp
+import com.mstokluska.chattie.models.UserMemStore
 import com.mstokluska.chattie.models.UserModel
 import com.mstokluska.graphql.CreateUserMutation
 import com.mstokluska.graphql.EditUserMutation
@@ -21,109 +22,93 @@ import org.jetbrains.anko.*
 class SignUpActivity : AppCompatActivity(), AnkoLogger {
 
     lateinit var app: MainApp
-    var user = UserModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         app = application as MainApp
 
-        // menu bar
-        toolbarCreateUser.title = "Sign Up"
+        toolbarCreateUser.title = getString(R.string.sign_up)
         setSupportActionBar(toolbarCreateUser)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(app.currentUser.userName.isNotEmpty()){
-            btnCreateUser.setText("Update!")
-            toolbarCreateUser.title = "Edit details"
-            user_create_Nickname.setText(app.currentUser.userName)
-            user_create_name.setText(app.currentUser.name)
+        if (app.users.isLoggedIn()) {
+            btnCreateUser.setText(getString(R.string.update))
+            toolbarCreateUser.title = getString(R.string.editDetails)
+            user_create_Nickname.setText(app.users.currentUser.userName)
+            user_create_name.setText(app.users.currentUser.name)
             user_create_Password.visibility = View.INVISIBLE
         }
 
         btnCreateUser.setOnClickListener() {
+            if (!app.users.isLoggedIn()) {
+                val newUser = UserModel(
+                    name = user_create_name.text.toString(),
+                    userName = user_create_Nickname.text.toString(),
+                    password = user_create_Password.text.toString()
+                )
 
-            if (app.currentUser.userName.isEmpty()) {
-                user.name = user_create_name.text.toString()
-                user.userName = user_create_Nickname.text.toString()
-                user.password = user_create_Password.text.toString()
+                app.users.createUser(newUser)
 
-                if (user.name.isEmpty() or user.userName.isEmpty() or user.password.isEmpty()) {
-                    toast("Make sure all fields are filled")
+                if (app.users.currentUser.name.isEmpty() or app.users.currentUser.userName.isEmpty() or app.users.currentUser.password.isEmpty()) {
+                    toast(getString(R.string.allFields))
                 } else {
-
                     val createUserMutation = CreateUserMutation.builder()
-                        .name(user.name)
-                        .username(user.userName)
-                        .password(user.password)
+                        .name(app.users.currentUser.name)
+                        .username(app.users.currentUser.userName)
+                        .password(app.users.currentUser.password)
                         .build()
-
 
                     app.client
                         .mutate(createUserMutation)
                         .enqueue(object : ApolloCall.Callback<CreateUserMutation.Data>() {
                             override fun onFailure(e: ApolloException) {
-                                e.printStackTrace()
+                                info(e)
                             }
 
                             override fun onResponse(response: Response<CreateUserMutation.Data>) {
-
                                 val resultUserName = response.data()?.createUser()?.username()
-
                                 runOnUiThread {
-
                                     if (resultUserName != null) {
-                                        toast("User Created!")
+                                        toast(getString(R.string.userCreated))
                                         finish()
                                     } else {
-                                        toast("Sorry, username already taken")
+                                        toast(getString(R.string.userNameTaken))
                                         user_create_Nickname.setText("")
                                     }
                                 }
-
                             }
                         })
-
-
                 }
-
             } else {
-
                 val editUser = EditUserMutation.builder()
-                    .id(app.currentUser.id)
+                    .id(app.users.currentUser.id)
                     .name(user_create_name.text.toString())
                     .username(user_create_Nickname.text.toString())
-                    .password(app.currentUser.password)
+                    .password(app.users.currentUser.password)
                     .build()
-
 
                 app.client
                     .mutate(editUser)
                     .enqueue(object : ApolloCall.Callback<EditUserMutation.Data>() {
                         override fun onFailure(e: ApolloException) {
-                            e.printStackTrace()
+                            info(e)
                         }
 
                         override fun onResponse(response: Response<EditUserMutation.Data>) {
-                            app.currentUser.userName = response.data()!!.editUser()!!.username()
-                            app.currentUser.name = response.data()!!.editUser()!!.name()
-
+                            app.users.currentUser.userName =
+                                response.data()!!.editUser()!!.username()
+                            app.users.currentUser.name = response.data()!!.editUser()!!.name()
                             runOnUiThread {
-                                    toast("User Updated!")
-                                    finish()
+                                toast(getString(R.string.userUpdated))
+                                finish()
                             }
-
                         }
                     })
-
             }
         }
-
-
-
     }
 
-    // Inflating menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.create_menu, menu)
         return super.onCreateOptionsMenu(menu)

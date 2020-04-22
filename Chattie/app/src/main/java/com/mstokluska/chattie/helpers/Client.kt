@@ -7,8 +7,8 @@ import okhttp3.OkHttpClient
 
 object Client {
 
-
-    var SERVER_URL = "http://10.0.2.2:4000/graphql"
+    var SERVER_URL = "http://192.168.154.128:4000/graphql"
+    //var SERVER_URL = "http://10.0.2.2:4000/graphql"
     var apClient: ApolloClient? = null
     var okHttpClient =
         OkHttpClient.Builder()

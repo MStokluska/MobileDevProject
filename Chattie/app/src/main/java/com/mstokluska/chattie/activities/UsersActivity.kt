@@ -12,6 +12,7 @@ import com.mstokluska.chattie.R
 import com.mstokluska.chattie.adapters.UsersAdapter
 import com.mstokluska.chattie.adapters.UsersListener
 import com.mstokluska.chattie.main.MainApp
+import com.mstokluska.chattie.models.UserMemStore
 import com.mstokluska.chattie.models.UserModel
 import com.mstokluska.graphql.CreateChatMutation
 import com.mstokluska.graphql.GetUsersQuery
@@ -25,14 +26,14 @@ import org.jetbrains.anko.toast
 class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
 
     lateinit var app: MainApp
-    val users = ArrayList<UserModel>()
+    var usersArray = ArrayList<UserModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_users)
         app = application as MainApp
 
-       setupRecyclerView()
+        setupRecyclerView()
 
         val getUsersQuery = GetUsersQuery.builder().build()
 
@@ -40,24 +41,23 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
             .query(getUsersQuery)
             .enqueue(object : ApolloCall.Callback<GetUsersQuery.Data>() {
                 override fun onFailure(e: ApolloException) {
-
+                    info(e)
                 }
 
                 override fun onResponse(response: Response<GetUsersQuery.Data>) {
                     runOnUiThread {
-                            val initialUserArray = response.data()!!.allUsers
-
-                            initialUserArray.forEach {
-                                if(it.username() != app.currentUser.userName) {
-                                    users.add(UserModel(it.id(), it.username(), it.name()))
-                                }
+                        val initialUserArray = response.data()!!.allUsers
+                        initialUserArray.forEach {
+                            if (it.username() != app.users.currentUser.userName) {
+                                usersArray.add(UserModel(it.id(), it.username(), it.name()))
                             }
-                        usersRecyclerView.adapter?.notifyDataSetChanged()
                         }
+                        usersRecyclerView.adapter?.notifyDataSetChanged()
                     }
+                }
             })
 
-        toolbarChatWithUser.title = "Users"
+        toolbarChatWithUser.title = getString(R.string.users)
         setSupportActionBar(toolbarChatWithUser)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
@@ -77,13 +77,12 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onUserClick(userClicked: UserModel) {
+    override fun onUserClick(user: UserModel) {
 
         val createChatMutation = CreateChatMutation.builder()
-            .creator(app.currentUser.userName)
-            .recipent(userClicked.userName)
+            .creator(app.users.currentUser.userName)
+            .recipent(user.userName)
             .build()
-
 
         app.client
             .mutate(createChatMutation)
@@ -105,7 +104,6 @@ class UsersActivity : AppCompatActivity(), UsersListener, AnkoLogger {
     private fun setupRecyclerView() {
         val layoutManager = LinearLayoutManager(this)
         usersRecyclerView.layoutManager = layoutManager
-        usersRecyclerView.adapter = UsersAdapter(users, this)
+        usersRecyclerView.adapter = UsersAdapter(usersArray, this)
     }
-
 }

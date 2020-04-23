@@ -1,6 +1,16 @@
 # MobileDevProject
-A project for Mobile App Development in IT - Year 3
+A project for Mobile App Development in IT - Year 3.
+Below are the instructions how to run the app locally and how will be presented during my demo.
 
+
+## Demo for Mobile App Dev
+
+To demo I am going to provide you with a server URL. Server is running on Amazon and is behind load balancer and autoscaling.
+Please paste the server url into helpers/client `serverURL` variable.
+
+## Running locally
+
+To test locally please follow instruction below:
 
 ### Server
 In server directory run:
@@ -12,14 +22,10 @@ Run following commands:
 $ yarn install
 ```
 2. Run docker db container
-```sh
-$ docker run --name mobileapp-postgres -e POSTGRES_DB=mobileapp -e POSTGRES_USER=testuser -e POSTGRES_PASSWORD=testpassword --rm -p5432:5432 postgres 
-```
-OR 
 ```
 $ docker-compose up
 ```
-3. Create database & use server
+3. Create database & use server ( user CREATE_DB only at initial launch as it recreates db tables )
 ```sh
 $ CREATE_DB=True yarn start
 ```
@@ -28,3 +34,5 @@ $ CREATE_DB=True yarn start
 4. Alternatively provide PORT env variable to start server at different 
 
 ### Client:
+
+Server URL is set in helpers/client. Launch Chattie via Android Studio on any amount of emulators. Create users, log in, create chats and chat!

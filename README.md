@@ -2,7 +2,6 @@
 A project for Mobile App Development in IT - Year 3.
 Below are the instructions how to run the app locally and how will be presented during my demo.
 
-
 ## Demo for Mobile App Dev
 
 To demo I am going to provide you with a server URL. Server is running on Amazon and is behind load balancer and autoscaling.
